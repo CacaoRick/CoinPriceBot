@@ -1,0 +1,16 @@
+{
+  "name": "coin-price-bot",
+  "version": "0.0.1",
+  "main": "build/index.js",
+  "license": "MIT",
+  "scripts": {
+    "start": "node ."
+  },
+  "dependencies": {
+    "axios": "^0.16.2",
+    "lodash": "^4.17.4",
+    "moment": "^2.18.1",
+    "node-telegram-bot-api": "^0.28.0",
+    "quiche": "^0.3.0"
+  }
+}

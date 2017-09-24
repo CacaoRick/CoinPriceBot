@@ -4,22 +4,53 @@ const quiche = require("quiche")
 const moment = require("moment")
 const Telegraf = require("telegraf")
 const config = require("./config")
+const api = require("./api")
 
 const bot = new Telegraf(config.botToken)
 
 bot.command("/help", (ctx) => {
 	switch (ctx.update.message.text.split(" ")[1]) {
 		default: {
-			ctx.replyWithMarkdown(`/price`)
+			ctx.replyWithMarkdown(`/price btc|xmr|...\n/history y|m`)
 			break
 		}
 	}
 })
 
 bot.command("/price", (ctx) => {
-	axios.get("https://www.bitoex.com/api/v1/get_rate")
-		.then((res) => {
-			ctx.replyWithMarkdown(`*BitoEx* (NTD)\n買: \`${res.data.buy}\`\n賣: \`${res.data.sell}\``)
+	// 沒給幣別的話預設 btc
+	const command = ctx.update.message.text.split(" ")
+	const currency = command[1] ? command[1].toUpperCase() : "BTC"
+
+	let promises = []
+
+	if (_.includes(bitoexCurrencies, currency)) {
+		promises.push(api.bitoex())
+	}
+
+	if (_.includes(bitfinexCurrencies, currency)) {
+		promises.push(api.bitfinex(currency))
+	}
+
+	if (_.includes(bittrexCurrencies, currency)) {
+		promises.push(api.bittrex(currency))
+	}
+
+	Promise.all(promises)
+		.then((results) => {
+			console.log(results)
+			if (results) {
+				let detail = ""
+				_.each(results, (result) => {
+					detail += result
+				})
+				ctx.replyWithMarkdown(detail)
+			} else {
+				ctx.replyWithMarkdown("不支援該幣種")
+			}
+		})
+		.catch((error) => {
+			console.log(error)
 		})
 })
 
@@ -106,3 +137,67 @@ function getRange(array) {
 		step,
 	}
 }
+
+const bitoexCurrencies = [
+	"BTC",
+]
+const bitfinexCurrencies = [
+	"BTC", "LTC", "ETH", "ETC", "RRT",
+	"ZEC", "XMR", "DSH", "BCC", "BCU",
+	"XRP", "IOT", "EOS", "SAN", "OMG",
+	"BCH", "NEO", "ETP",
+]
+const bittrexCurrencies = [
+	"LTC", "DOGE", "VTC", "PPC", "FTC",
+	"RDD", "NXT", "DASH", "POT", "BLK",
+	"EMC2", "XMY", "AUR", "EFL", "GLD",
+	"SLR", "PTC", "GRS", "NLG", "RBY",
+	"XWC", "MONA", "THC", "ENRG", "ERC",
+	"VRC", "CURE", "XMR", "CLOAK", "START",
+	"KORE", "XDN", "TRUST", "NAV", "XST",
+	"BTCD", "VIA", "UNO", "PINK", "IOC",
+	"CANN", "SYS", "NEOS", "DGB", "BURST",
+	"EXCL", "SWIFT", "DOPE", "BLOCK", "ABY",
+	"BYC", "XMG", "BLITZ", "BAY", "BTS",
+	"FAIR", "SPR", "VTR", "XRP", "GAME",
+	"COVAL", "NXS", "XCP", "BITB", "GEO",
+	"FLDC", "GRC", "FLO", "NBT", "MUE",
+	"XEM", "CLAM", "DMD", "GAM", "SPHR",
+	"OK", "SNRG", "PKB", "CPC", "AEON",
+	"ETH", "GCR", "TX", "BCY", "EXP",
+	"INFX", "OMNI", "AMP", "AGRS", "XLM",
+	"BTA", /*"BTC"*/, "CLUB", "VOX", "EMC",
+	"FCT", "MAID", "EGC", "SLS", "RADS",
+	"DCR", "SAFEX", "BSD", "XVG", "PIVX",
+	"XVC", "MEME", "STEEM", "2GIVE", "LSK",
+	"PDC", "BRK", "DGD", "DGD", "WAVES",
+	"RISE", "LBC", "SBD", "BRX", "DRACO",
+	"ETC", "ETC", "STRAT", "UNB", "SYNX",
+	"TRIG", "EBST", "VRM", "SEQ", "XAUR",
+	"SNGLS", "REP", "SHIFT", "ARDR", "XZC",
+	"NEO", "ZEC", "ZCL", "IOP", "DAR",
+	"GOLOS", "UBQ", "KMD", "GBG", "SIB",
+	"ION", "LMC", "QWARK", "CRW", "SWT",
+	"TIME", "MLN", "ARK", "DYN", "TKS",
+	"MUSIC", "DTB", "INCNT", "GBYTE", "GNT",
+	"NXC", "EDG", "LGD", "TRST", "GNT",
+	"REP", "ETH", "WINGS", "WINGS", "RLC",
+	"GNO", "GUP", "LUN", "GUP", "RLC",
+	"LUN", "SNGLS", "GNO", "APX", "TKN",
+	"TKN", "HMQ", "HMQ", "ANT", "TRST",
+	"ANT", "SC", "BAT", "BAT", "ZEN",
+	"1ST", "QRL", "1ST", "QRL", "CRB",
+	"CRB", "LGD", "PTOY", "PTOY", "MYST",
+	"MYST", "CFI", "CFI", "BNT", "BNT",
+	"NMR", "NMR", "TIME", "LTC", "XRP",
+	"SNT", "SNT", "DCT", "XEL", "MCO",
+	"MCO", "ADT", "ADT", "FUN", "FUN",
+	"PAY", "PAY", "MTL", "MTL", "STORJ",
+	"STORJ", "ADX", "ADX", "DASH", "SC",
+	"ZEC", "ZEC", "LTC", "ETC", "XRP",
+	"OMG", "OMG", "CVC", "CVC", "PART",
+	"QTUM", "QTUM", "XMR", "XEM", "XLM",
+	"NEO", "XMR", "DASH", "BCC", "BCC",
+	"BCC", "NEO", "WAVES", "STRAT", "DGB",
+	"FCT", "BTS", "OMG",
+]

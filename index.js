@@ -70,10 +70,8 @@ bot.command("/history", (ctx) => {
 					// 價格
 					prices = _.map(data, "price")
 					// 範圍
-					const sortedPrice = _.sortBy(prices)
-					const min = sortedPrice[0]
-					const max = _.last(sortedPrice)
-					chart.setAxisRange("y", Math.floor(min / 10000) * 10000, Math.ceil(max / 10000) * 10000, 10000)
+					const range = getRange(prices)
+					chart.setAxisRange("y", range.start, range.end, range.step)
 					// 日期
 					timeline = _.map(data, (obj) => {
 						const date = moment(obj.date, "x").format("D")
@@ -96,3 +94,15 @@ bot.command("/history", (ctx) => {
 })
 
 bot.startPolling()
+
+function getRange(array) {
+	const sorted = _.sortBy(array)
+	const min = sorted[0]
+	const max = _.last(sorted)
+	const step = Math.pow(10, String(max - min).length - 1)
+	return {
+		start: Math.floor(min / step) * step,
+		end: Math.ceil(max / step) * step,
+		step,
+	}
+}

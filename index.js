@@ -2,23 +2,19 @@ const _ = require("lodash")
 const axios = require("axios")
 const quiche = require("quiche")
 const moment = require("moment")
-const TelegramBot = require("node-telegram-bot-api")
+const Telegraf = require("telegraf")
 const config = require("./config")
 
-const bot = new TelegramBot(config.botToken, { polling: true })
+const bot = new Telegraf(config.botToken)
 
-bot.onText(/\/price/, (message) => {
+bot.command("/price", (ctx) => {
 	axios.get("https://www.bitoex.com/api/v1/get_rate")
 		.then((res) => {
-			bot.sendMessage(
-				message.chat.id,
-				`*BitoEx* (NTD)\n買: \`${res.data.buy}\`\n賣: \`${res.data.sell}\``,
-				{ parse_mode: "Markdown" }
-			)
+			ctx.replyWithMarkdown(`*BitoEx* (NTD)\n買: \`${res.data.buy}\`\n賣: \`${res.data.sell}\``)
 		})
 })
 
-bot.onText(/\/history/, (message) => {
+bot.command("/history", (ctx) => {
 	axios.get("https://www.bitoex.com/charts/price_history")
 		.then((res) => {
 			const { data } = res
@@ -43,6 +39,8 @@ bot.onText(/\/history/, (message) => {
 			chart.setLegendHidden()
 
 			const imageUrl = chart.getUrl(true)
-			bot.sendPhoto(message.chat.id, imageUrl)
+			ctx.replyWithPhoto(imageUrl)
 		})
 })
+
+bot.startPolling()

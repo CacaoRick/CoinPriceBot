@@ -13,13 +13,26 @@ const bot = new Telegraf(config.botToken)
 bot.command("/help", (ctx) => {
 	switch (ctx.update.message.text.split(" ")[1]) {
 		default: {
-			ctx.replyWithMarkdown(`/price btc|xmr|...\n/history y|m`)
+			ctx.replyWithMarkdown(
+				`/price \`[ btc | xmr | eth | ... ]\`
+察看目前的價錢 (BitoEX, Bitfinex, Bittrex)
+/history \`[ y | m ]\`
+查看歷史價格 (目前只有 BitoEX)
+/poolStats
+查看礦池明細，需先使用 /setPool 設定礦池與錢包地址
+/setPool \`<poolApi>\` \`<walletAddress>\`
+設定礦池API和錢包地址 (再次使用會覆蓋之前的設定)，範例：
+\`\`\`
+/setPool https://monerohash.com/api/ 445nbhVeHeKdGtpoztN6MVhczCARRa57EAY4PwRiqkJe1ATgBxvzMDES5eQ5m1XKXFZYoekc1n9EW1r7GiMrSHLbEeMuyDt
+\`\`\`
+`
+			)
 			break
 		}
 	}
 })
 
-bot.command("/setpool", (ctx) => {
+bot.command("/setPool", (ctx) => {
 	const command = ctx.update.message.text.split(" ")
 	let poolapi = command[1]
 	const address = command[2]
@@ -119,7 +132,7 @@ bot.command("/history", (ctx) => {
 		.then((res) => {
 			let { data } = res
 			const chart = quiche("line")
-			chart.setTitle("BitoEx history (NTD)")
+			chart.setTitle("BitoEX history (NTD)")
 			chart.setSparklines()
 			chart.setAutoScaling()
 			chart.setLegendHidden()

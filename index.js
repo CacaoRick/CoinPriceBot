@@ -16,10 +16,16 @@ bot.command("/help", (ctx) => {
 	switch (ctx.update.message.text.split(" ")[1]) {
 		default: {
 			ctx.replyWithMarkdown(
-				`/price \`[ btc | xmr | eth | ... ]\`
+				`*價格相關功能*
+/price \`[btc|xmr|eth|...]\`
 察看目前的價錢 (BitoEX, Bitfinex, Bittrex)
-/history \`[ y | m ]\`
+/history \`[year|month]\`
 查看歷史價格 (目前只有 BitoEX)
+/exchange \`<0.1>\` \`[btc|xmr|eth|...]\`
+計算可以換成多少台幣
+
+*礦池相關功能*
+用於 CryptoNote 架設的礦池
 /poolStats
 查看礦池明細，需先使用 /setPool 設定礦池與錢包地址
 /setPool \`<poolApi>\` \`<walletAddress>\`
@@ -177,16 +183,19 @@ bot.command("/exchange", (ctx) => {
 })
 
 bot.command("/poolStats", (ctx) => {
-	const poolapi = db.getData(`/${ctx.message.chat.id}`)
-
-	api.poolStats(poolapi)
-		.then((res) => {
-			ctx.replyWithMarkdown(res)
-		})
-		.catch((err) => {
-			ctx.reply("API 請求失敗")
-			console.log(`poolapi request error ${err}`)
-		})
+	try {
+		const poolapi = db.getData(`/${ctx.message.chat.id}`)
+		api.poolStats(poolapi)
+			.then((res) => {
+				ctx.replyWithMarkdown(res)
+			})
+			.catch((err) => {
+				ctx.reply("API 請求失敗")
+				console.log(`poolapi request error ${err}`)
+			})
+	} catch (error) {
+		ctx.replyWithMarkdown(`請先設定礦池，詳見 /help`)
+	}
 })
 
 bot.command("/setPool", (ctx) => {
@@ -229,7 +238,7 @@ bot.command("/setPool", (ctx) => {
 				console.log(`setpool poolapi request error ${err}`)
 			})
 	} else {
-		ctx.reply("參數格式錯誤")
+		ctx.reply("參數格式錯誤，詳見 /help")
 	}
 })
 

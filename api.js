@@ -1,4 +1,5 @@
 const axios = require("axios")
+const moment = require("moment")
 
 module.exports = {
   bitoex: () => {
@@ -45,4 +46,24 @@ module.exports = {
         })
     })
   },
+  poolStats: (poolapi) => {
+    return new Promise((resolve, reject) => {
+      console.log(`request ${poolapi}`)
+      axios.get(poolapi)
+        .then((res) => {
+          console.log(res.data.stats)
+          const { stats } = res.data
+          resolve(parsePoolStatus(stats))
+        })
+        .catch((err) => {
+          reject(`Pool api error ${err.message}`)
+        })
+    })
+  }
+}
+
+const parsePoolStatus = (stats) => {
+  const xmr = Number(stats.balance) / 1000000000000
+  return `*Hash Rate:\n*\`${stats.hashrate}\`\n*Pending Balance:\n*\`${xmr} XMR\`
+*Last Share Submitted:\n*\`${moment(stats.lastShare, "X").fromNow()}\``
 }

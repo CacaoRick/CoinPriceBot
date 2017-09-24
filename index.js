@@ -3,8 +3,10 @@ const axios = require("axios")
 const quiche = require("quiche")
 const moment = require("moment")
 const Telegraf = require("telegraf")
+const JsonDB = require("node-json-db");
 const config = require("./config")
 const api = require("./api")
+const db = new JsonDB("xmr-pool")
 
 const bot = new Telegraf(config.botToken)
 

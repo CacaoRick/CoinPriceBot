@@ -6,7 +6,11 @@ module.exports = {
     return new Promise((resolve, reject) => {
       axios.get("https://www.bitoex.com/api/v1/get_rate")
         .then((res) => {
-          resolve(`*BitoEx* (NTD)\n買: \`${res.data.buy}\`\n賣: \`${res.data.sell}\`\n`)
+          resolve({
+            title: "*BitoEX* (NTD)",
+            bid: res.data.sell,
+            ask: res.data.buy,
+          })
         })
         .catch((err) => {
           reject(`BitoEx error ${err.message}`)
@@ -18,7 +22,12 @@ module.exports = {
       axios.get(`https://api.bitfinex.com/v2/ticker/t${currency}USD`)
         .then((res) => {
           const data = res.data
-          resolve(`*Bitfinex* (USD)\n買: \`${data[8]}\`\n賣: \`${data[9]}\`\nLast: \`${data[6]}\`\n`)
+          resolve({
+            title: "*Bitfinex* (USD)",
+            bid: data[0],
+            ask: data[2],
+            last: data[6],
+          })
         })
         .catch((err) => {
           reject(`Bitfinex ${currency}USD error ${err.message}`)
@@ -35,7 +44,12 @@ module.exports = {
         .then((res) => {
           const data = res.data
           if (data.success) {
-            resolve(`*Bittrex* (BTC)\n買: \`${data.result.Bid}\`\n賣: \`${data.result.Ask}\`\nLast: \`${data.result.Last}\`\n`)
+            resolve({
+              title: "*Bittrex* (BTC)",
+              bid: data.result.Bid,
+              ask: data.result.Ask,
+              last: data.result.Last,
+            })
           }
         })
         .catch((err) => {

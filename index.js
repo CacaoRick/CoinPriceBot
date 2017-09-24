@@ -59,7 +59,7 @@ bot.command("/price", (ctx) => {
 			if (results) {
 				let detail = ""
 				_.each(results, (result) => {
-					detail += result
+					detail += `${result.title}\n買: \`${result.ask}\`\n賣: \`${result.bid}\`\n${result.last ? `Last: \`${result.last}\`\n` : ""}`
 				})
 				ctx.replyWithMarkdown(detail)
 			} else {
@@ -138,6 +138,41 @@ bot.command("/history", (ctx) => {
 			// 轉成圖片連結
 			const imageUrl = chart.getUrl(true)
 			ctx.replyWithPhoto(imageUrl)
+		})
+})
+
+bot.command("/exchange", (ctx) => {
+	const command = ctx.update.message.text.split(" ")
+	if (command.length != 3) {
+		ctx.replyWithMarkdown("參數錯誤，範例: `/exchange 0.5 xmr`")
+		return
+	}
+	const price = Number(command[1])
+	const currency = command[2] ? command[2].toUpperCase() : "BTC"
+
+	const promises = []
+	if (_.includes(supportCurrencies.bittrex, currency)) {
+		// 先轉 BTC
+		promises.push(api.bittrex(currency))
+	} else if (currency !== "BTC") {
+		ctx.replyWithMarkdown("不支援該幣種")
+		return
+	}
+	promises.push(api.bitoex())
+
+	Promise.all(promises)
+		.then((results) => {
+			if (currency === "BTC") {
+				const ntd = price * results[0].ask
+				ctx.replyWithMarkdown(`\`${price}\` BTC => \`${ntd.toFixed(0)}\` NTD`)
+			} else {
+				const btc = price * results[0].last
+				const ntd = btc * results[1].ask
+				ctx.replyWithMarkdown(`\`${price}\` ${currency} => \`${btc}\` BTC => \`${ntd.toFixed(0)}\` NTD`)
+			}
+		})
+		.catch((error) => {
+
 		})
 })
 

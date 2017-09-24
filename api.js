@@ -4,7 +4,6 @@ const moment = require("moment")
 module.exports = {
   bitoex: () => {
     return new Promise((resolve, reject) => {
-      console.log("request BitoEx")
       axios.get("https://www.bitoex.com/api/v1/get_rate")
         .then((res) => {
           resolve(`*BitoEx* (NTD)\n買: \`${res.data.buy}\`\n賣: \`${res.data.sell}\`\n`)
@@ -16,7 +15,6 @@ module.exports = {
   },
   bitfinex: (currency) => {
     return new Promise((resolve, reject) => {
-      console.log("request Bitfinex")
       axios.get(`https://api.bitfinex.com/v2/ticker/t${currency}USD`)
         .then((res) => {
           const data = res.data
@@ -29,7 +27,6 @@ module.exports = {
   },
   bittrex: (currency) => {
     return new Promise((resolve, reject) => {
-      console.log("request Bittrex")
       axios.get("https://bittrex.com/api/v1.1/public/getticker", {
         params: {
           market: `BTC-${currency}`
@@ -48,10 +45,8 @@ module.exports = {
   },
   poolStats: (poolapi) => {
     return new Promise((resolve, reject) => {
-      console.log(`request ${poolapi}`)
       axios.get(poolapi)
         .then((res) => {
-          console.log(res.data.stats)
           const { stats } = res.data
           resolve(parsePoolStatus(stats))
         })

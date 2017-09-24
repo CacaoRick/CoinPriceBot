@@ -110,7 +110,6 @@ bot.command("/price", (ctx) => {
 
 	Promise.all(promises)
 		.then((results) => {
-			console.log(results)
 			if (results) {
 				let detail = ""
 				_.each(results, (result) => {

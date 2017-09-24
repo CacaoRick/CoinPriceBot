@@ -6,8 +6,8 @@ const Telegraf = require("telegraf")
 const JsonDB = require("node-json-db");
 const config = require("./config")
 const api = require("./api")
-const db = new JsonDB("xmr-pool")
 
+const db = new JsonDB("pools", true, true)
 const bot = new Telegraf(config.botToken)
 
 bot.command("/help", (ctx) => {
@@ -17,6 +17,63 @@ bot.command("/help", (ctx) => {
 			break
 		}
 	}
+})
+
+bot.command("/setpool", (ctx) => {
+	const command = ctx.update.message.text.split(" ")
+	let poolapi = command[1]
+	const address = command[2]
+	if (poolapi && address) {
+		// 檢查 api 和 address
+		if (!poolapi.includes("://")) {
+			ctx.reply("礦池API位址錯誤")
+			return
+		}
+		if (!(address.startsWith("4") && address.length >= 95)) {
+			ctx.reply("錢包地址錯誤")
+			return
+		}
+
+		if (poolapi.includes("stats_address")) {
+			// 有 stats_address，先去掉
+			poolapi = poolapi.split("stats_address")[0]
+
+		} else if (!poolapi.endsWith("/")) {
+			// 沒 stats_address，也沒 / 結尾
+			poolapi = poolapi + "/"
+		}
+
+		const { username, id } = ctx.message.chat
+		const user = username ? username : id
+		poolapi = `${poolapi}stats_address?address=${address}&longpoll=false`
+
+		api.poolStats(poolapi)
+			.then((res) => {
+				ctx.replyWithMarkdown(res)
+				console.log(`user setpool ${poolapi}`)
+				db.push(`/${ctx.message.chat.id}`, poolapi);
+				ctx.reply("礦池設定已儲存，可使用 /poolStats 察看礦池統計")
+			})
+			.catch((err) => {
+				ctx.reply("請求失敗，礦池設定未儲存")
+				console.log(`setpool poolapi request error ${err}`)
+			})
+	} else {
+		ctx.reply("參數格式錯誤")
+	}
+})
+
+bot.command("/poolStats", (ctx) => {
+	const poolapi = db.getData(`/${ctx.message.chat.id}`)
+
+	api.poolStats(poolapi)
+		.then((res) => {
+			ctx.replyWithMarkdown(res)
+		})
+		.catch((err) => {
+			ctx.reply("API 請求失敗")
+			console.log(`poolapi request error ${err}`)
+		})
 })
 
 bot.command("/price", (ctx) => {

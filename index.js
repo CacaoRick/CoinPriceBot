@@ -13,7 +13,7 @@ const db = new JsonDB("pools", true, true)
 const bot = new Telegraf(config.botToken, { username: config.botUsername })
 
 bot.command("/help", (ctx) => {
-	switch (ctx.update.message.text.split(" ")[1]) {
+	switch (ctx.message.text.split(" ")[1]) {
 		default: {
 			ctx.replyWithMarkdown(
 				`*價格相關功能*
@@ -43,7 +43,7 @@ bot.command("/help", (ctx) => {
 
 bot.command("/price", (ctx) => {
 	// 沒給幣別的話預設 btc
-	const command = ctx.update.message.text.split(" ")
+	const command = ctx.message.text.split(" ")
 	const currency = command[1] ? command[1].toUpperCase() : "BTC"
 
 	let promises = []
@@ -78,7 +78,7 @@ bot.command("/price", (ctx) => {
 })
 
 bot.command("/history", (ctx) => {
-	const params = ctx.update.message.text.split(" ")[1] ? ctx.update.message.text.split(" ")[1].toLowerCase() : null
+	const params = ctx.message.text.split(" ")[1] ? ctx.message.text.split(" ")[1].toLowerCase() : null
 	axios.get("https://www.bitoex.com/charts/price_history")
 		.then((res) => {
 			let { data } = res
@@ -148,7 +148,7 @@ bot.command("/history", (ctx) => {
 })
 
 bot.command("/exchange", (ctx) => {
-	const command = ctx.update.message.text.split(" ")
+	const command = ctx.message.text.split(" ")
 	if (command.length != 3) {
 		ctx.replyWithMarkdown("參數錯誤，範例: `/exchange 0.5 xmr`")
 		return
@@ -184,7 +184,7 @@ bot.command("/exchange", (ctx) => {
 
 bot.command("/poolStats", (ctx) => {
 	try {
-		const poolapi = db.getData(`/${ctx.message.chat.id}`)
+		const poolapi = db.getData(`/${ctx.message.from.id}`)
 		api.poolStats(poolapi)
 			.then((res) => {
 				ctx.replyWithMarkdown(res)
@@ -199,7 +199,7 @@ bot.command("/poolStats", (ctx) => {
 })
 
 bot.command("/setPool", (ctx) => {
-	const command = ctx.update.message.text.split(" ")
+	const command = ctx.message.text.split(" ")
 	let poolapi = command[1]
 	if (poolapi && poolapi.includes("://") && poolapi.includes("stats_address?address=4")) {
 		api.poolStats(poolapi)
@@ -208,7 +208,7 @@ bot.command("/setPool", (ctx) => {
 				const user = username ? username : id
 				console.log(`${user} setpool ${poolapi}`)
 				try {
-					db.push(`/${ctx.message.chat.id}`, poolapi)
+					db.push(`/${ctx.message.from.id}`, poolapi)
 					ctx.replyWithMarkdown(res)
 					ctx.reply("礦池設定已儲存，可使用 /poolStats 察看礦池統計")
 				} catch (error) {

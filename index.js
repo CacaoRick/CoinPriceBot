@@ -204,7 +204,7 @@ bot.command("/setPool", (ctx) => {
 	if (poolapi && poolapi.includes("://") && poolapi.includes("stats_address?address=4")) {
 		api.poolStats(poolapi)
 			.then((res) => {
-				const { username, id } = ctx.message.chat
+				const { username, id } = ctx.message.from
 				const user = username ? username : id
 				console.log(`${user} setpool ${poolapi}`)
 				try {

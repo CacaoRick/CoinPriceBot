@@ -3,7 +3,7 @@ const axios = require("axios")
 const quiche = require("quiche")
 const moment = require("moment")
 const Telegraf = require("telegraf")
-const JsonDB = require("node-json-db");
+const JsonDB = require("node-json-db")
 
 const api = require("./api")
 const config = require("./config")
@@ -208,7 +208,7 @@ bot.command("/setPool", (ctx) => {
 				const user = username ? username : id
 				console.log(`${user} setpool ${poolapi}`)
 				try {
-					db.push(`/${ctx.message.chat.id}`, poolapi);
+					db.push(`/${ctx.message.chat.id}`, poolapi)
 					ctx.replyWithMarkdown(res)
 					ctx.reply("礦池設定已儲存，可使用 /poolStats 察看礦池統計")
 				} catch (error) {

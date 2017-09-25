@@ -154,6 +154,10 @@ bot.command("/exchange", (ctx) => {
 		return
 	}
 	const price = Number(command[1])
+	if (!isFinite(price)) {
+		ctx.replyWithSticker("CAADBQADKwMAAonzDAUWfMQlaopeRwI")
+		return
+	}
 	const currency = command[2] ? command[2].toUpperCase() : "BTC"
 
 	const promises = []

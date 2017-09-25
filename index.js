@@ -10,7 +10,7 @@ const config = require("./config")
 const supportCurrencies = require("./supportCurrencies")
 
 const db = new JsonDB("pools", true, true)
-const bot = new Telegraf(config.botToken)
+const bot = new Telegraf(config.botToken, { username: config.botUsername })
 
 bot.command("/help", (ctx) => {
 	switch (ctx.update.message.text.split(" ")[1]) {

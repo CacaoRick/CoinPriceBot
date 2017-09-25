@@ -178,7 +178,7 @@ bot.command("/exchange", (ctx) => {
 			}
 		})
 		.catch((error) => {
-
+			console.log(`exchange promise all error ${error.message}`)
 		})
 })
 

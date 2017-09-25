@@ -31,7 +31,7 @@ bot.command("/help", (ctx) => {
 /setPool \`<poolApi>\` \`<walletAddress>\`
 設定礦池API和錢包地址 (再次使用會覆蓋之前的設定)，範例：
 \`\`\`
-/setPool https://monerohash.com/api/ 445nbhVeHeKdGtpoztN6MVhczCARRa57EAY4PwRiqkJe1ATgBxvzMDES5eQ5m1XKXFZYoekc1n9EW1r7GiMrSHLbEeMuyDt
+/setPool https://monerohash.com/api/stats_address?address=445nbhVeHeKdGtpoztN6MVhczCARRa57EAY4PwRiqkJe1ATgBxvzMDES5eQ5m1XKXFZYoekc1n9EW1r7GiMrSHLbEeMuyDt&longpoll=false
 \`\`\`
 `
 			)
@@ -201,44 +201,26 @@ bot.command("/poolStats", (ctx) => {
 bot.command("/setPool", (ctx) => {
 	const command = ctx.update.message.text.split(" ")
 	let poolapi = command[1]
-	const address = command[2]
-	if (poolapi && address) {
-		// 檢查 api 和 address
-		if (!poolapi.includes("://")) {
-			ctx.reply("礦池API位址錯誤")
-			return
-		}
-		if (!(address.startsWith("4") && address.length >= 95)) {
-			ctx.reply("錢包地址錯誤")
-			return
-		}
-
-		if (poolapi.includes("stats_address")) {
-			// 有 stats_address，先去掉
-			poolapi = poolapi.split("stats_address")[0]
-
-		} else if (!poolapi.endsWith("/")) {
-			// 沒 stats_address，也沒 / 結尾
-			poolapi = poolapi + "/"
-		}
-
-		const { username, id } = ctx.message.chat
-		const user = username ? username : id
-		poolapi = `${poolapi}stats_address?address=${address}&longpoll=false`
-
+	if (poolapi && poolapi.includes("://") && poolapi.includes("stats_address?address=4")) {
 		api.poolStats(poolapi)
 			.then((res) => {
-				ctx.replyWithMarkdown(res)
-				console.log(`user setpool ${poolapi}`)
-				db.push(`/${ctx.message.chat.id}`, poolapi);
-				ctx.reply("礦池設定已儲存，可使用 /poolStats 察看礦池統計")
+				const { username, id } = ctx.message.chat
+				const user = username ? username : id
+				console.log(`${user} setpool ${poolapi}`)
+				try {
+					db.push(`/${ctx.message.chat.id}`, poolapi);
+					ctx.replyWithMarkdown(res)
+					ctx.reply("礦池設定已儲存，可使用 /poolStats 察看礦池統計")
+				} catch (error) {
+					ctx.reply("礦池設定儲存失敗QQ")
+				}
 			})
 			.catch((err) => {
 				ctx.reply("請求失敗，礦池設定未儲存")
 				console.log(`setpool poolapi request error ${err}`)
 			})
 	} else {
-		ctx.reply("參數格式錯誤，詳見 /help")
+		ctx.reply("礦池API位址錯誤")
 	}
 })
 

@@ -230,6 +230,7 @@ bot.command("/setPool", (ctx) => {
 })
 
 bot.startPolling()
+console.log("bot start polling.")
 
 function getRange(array) {
 	const sorted = _.sortBy(array)

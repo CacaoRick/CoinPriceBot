@@ -187,7 +187,6 @@ bot.command("/exchange", (ctx) => {
 })
 
 bot.command("/poolStats", (ctx) => {
-	console.log(ctx.message.from.id, "call poolStats")
 	try {
 		const poolapi = db.getData(`/${ctx.message.from.id}`)
 		api.poolStats(poolapi)

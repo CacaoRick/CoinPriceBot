@@ -12,6 +12,10 @@ const supportCurrencies = require("./supportCurrencies")
 const db = new JsonDB("pools", true, true)
 const bot = new Telegraf(config.botToken, { username: config.botUsername })
 
+bot.catch((error) => {
+	console.log("error", error.error, error.message)
+})
+
 bot.command("/help", (ctx) => {
 	switch (ctx.message.text.split(" ")[1]) {
 		default: {

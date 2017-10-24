@@ -177,11 +177,11 @@ bot.command("/exchange", (ctx) => {
 	Promise.all(promises)
 		.then((results) => {
 			if (currency === "BTC") {
-				const ntd = price * results[0].ask
+				const ntd = price * results[0].bid
 				ctx.replyWithMarkdown(`\`${price}\` BTC => \`${ntd.toFixed(0)}\` NTD`)
 			} else {
 				const btc = price * results[0].last
-				const ntd = btc * results[1].ask
+				const ntd = btc * results[1].bid
 				ctx.replyWithMarkdown(`\`${price}\` ${currency} => \`${btc}\` BTC => \`${ntd.toFixed(0)}\` NTD`)
 			}
 		})

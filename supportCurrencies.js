@@ -6,7 +6,7 @@ module.exports = {
 		"BTC", "LTC", "ETH", "ETC", "RRT",
 		"ZEC", "XMR", "DSH", "BCC", "BCU",
 		"XRP", "IOT", "EOS", "SAN", "OMG",
-		"BCH", "NEO", "ETP",
+		"BCH", "NEO", "ETP", "BTG",
 	],
 	bittrex: [
 		"LTC", "DOGE", "VTC", "PPC", "FTC",

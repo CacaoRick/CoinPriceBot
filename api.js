@@ -38,8 +38,8 @@ module.exports = {
 		return new Promise((resolve, reject) => {
 			axios.get("https://bittrex.com/api/v1.1/public/getticker", {
 				params: {
-					market: `BTC-${currency}`
-				}
+					market: `BTC-${currency}`,
+				},
 			})
 				.then((res) => {
 					const data = res.data
@@ -68,7 +68,7 @@ module.exports = {
 					reject(`Pool api error ${err.message}`)
 				})
 		})
-	}
+	},
 }
 
 const parsePoolStatus = (stats) => {

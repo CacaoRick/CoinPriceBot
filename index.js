@@ -178,12 +178,18 @@ bot.command("/exchange", (ctx) => {
 				} else {
 					message += `${(price * maicoinPrice).toFixed(0)}\` NTD (by MaiCoin)`
 				}
-
 				ctx.replyWithMarkdown(message)
 			} else {
 				const btc = price * results[0].last
-				const ntd = btc * results[1].bid
-				ctx.replyWithMarkdown(`\`${price}\` ${currency} => \`${btc}\` BTC => \`${ntd.toFixed(0)}\` NTD`)
+				const bitoexPrice = results[1].bid
+				const maicoinPrice = results[2].bid
+				let message = `\`${price}\` ${currency} => \`${btc.toFixed(8)}\` BTC => \``
+				if (bitoexPrice > maicoinPrice) {
+					message += `${(btc * bitoexPrice).toFixed(0)}\` NTD (by BitoEx)`
+				} else {
+					message += `${(btc * maicoinPrice).toFixed(0)}\` NTD (by MaiCoin)`
+				}
+				ctx.replyWithMarkdown(message)
 			}
 		})
 		.catch((error) => {

@@ -165,12 +165,21 @@ bot.command("/exchange", (ctx) => {
 		return
 	}
 	promises.push(api.bitoex())
+	promises.push(api.maicoin())
 
 	Promise.all(promises)
 		.then((results) => {
 			if (currency === "BTC") {
-				const ntd = price * results[0].bid
-				ctx.replyWithMarkdown(`\`${price}\` BTC => \`${ntd.toFixed(0)}\` NTD`)
+				const bitoexPrice = results[0].bid
+				const maicoinPrice = results[0].bid
+				let message = `\`${price}\` BTC => \``
+				if (bitoexPrice > maicoinPrice) {
+					message += `${(price * bitoexPrice).toFixed(0)}\` NTD (by BitoEx)`
+				} else {
+					message += `${(price * maicoinPrice).toFixed(0)}\` NTD (by MaiCoin)`
+				}
+
+				ctx.replyWithMarkdown(message)
 			} else {
 				const btc = price * results[0].last
 				const ntd = btc * results[1].bid

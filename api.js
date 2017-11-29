@@ -22,8 +22,8 @@ module.exports = {
 				.then((res) => {
 					resolve({
 						title: "*MaiCoin* (NTD)",
-						bid: res.data.sell_price.toFixed(0),
-						ask: res.data.buy_price.toFixed(0),
+						bid: Number(res.data.sell_price).toFixed(0),
+						ask: Number(res.data.buy_price).toFixed(0),
 					})
 				})
 				.catch((err) => {

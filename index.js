@@ -3,13 +3,11 @@ const axios = require("axios")
 const quiche = require("quiche")
 const moment = require("moment")
 const Telegraf = require("telegraf")
-const JsonDB = require("node-json-db")
 
 const api = require("./api")
 const config = require("./config")
 const supportCurrencies = require("./supportCurrencies")
 
-const db = new JsonDB("pools", true, true)
 const bot = new Telegraf(config.botToken, { username: config.botUsername })
 
 bot.catch((error) => {
@@ -27,16 +25,6 @@ bot.command("/help", (ctx) => {
 查看歷史價格 (目前只有 BitoEX)
 /exchange \`<0.1>\` \`[btc|xmr|eth|...]\`
 計算可以換成多少台幣
-
-*礦池相關功能*
-用於 CryptoNote 架設的礦池
-/poolStats
-查看礦池明細，需先使用 /setPool 設定礦池與錢包地址
-/setPool \`<poolApi>\` \`<walletAddress>\`
-設定礦池API和錢包地址 (再次使用會覆蓋之前的設定)，範例：
-\`\`\`
-/setPool https://monerohash.com/api/stats_address?address=445nbhVeHeKdGtpoztN6MVhczCARRa57EAY4PwRiqkJe1ATgBxvzMDES5eQ5m1XKXFZYoekc1n9EW1r7GiMrSHLbEeMuyDt&longpoll=false
-\`\`\`
 `
 			)
 			break
@@ -192,48 +180,6 @@ bot.command("/exchange", (ctx) => {
 		.catch((error) => {
 			console.log(`exchange promise all error ${error.message}`)
 		})
-})
-
-bot.command("/poolStats", (ctx) => {
-	try {
-		const poolapi = db.getData(`/${ctx.message.from.id}`)
-		api.poolStats(poolapi)
-			.then((res) => {
-				ctx.replyWithMarkdown(res)
-			})
-			.catch((err) => {
-				ctx.reply("API 請求失敗")
-				console.log(`poolapi request error ${err}`)
-			})
-	} catch (error) {
-		ctx.replyWithMarkdown(`請先設定礦池，詳見 /help`)
-	}
-})
-
-bot.command("/setPool", (ctx) => {
-	const command = ctx.message.text.split(" ")
-	let poolapi = command[1]
-	if (poolapi && poolapi.includes("://") && poolapi.includes("stats_address?address=4")) {
-		api.poolStats(poolapi)
-			.then((res) => {
-				const { username, id } = ctx.message.from
-				const user = username ? username : id
-				console.log(`${user} setpool ${poolapi}`)
-				try {
-					db.push(`/${ctx.message.from.id}`, poolapi)
-					ctx.replyWithMarkdown(res)
-					ctx.reply("礦池設定已儲存，可使用 /poolStats 察看礦池統計")
-				} catch (error) {
-					ctx.reply("礦池設定儲存失敗QQ")
-				}
-			})
-			.catch((err) => {
-				ctx.reply("請求失敗，礦池設定未儲存")
-				console.log(`setpool poolapi request error ${err}`)
-			})
-	} else {
-		ctx.reply("礦池API位址錯誤")
-	}
 })
 
 bot.startPolling()

@@ -2,6 +2,9 @@ module.exports = {
 	bitoex: [
 		"BTC",
 	],
+	maicoin: [
+		"BTC",
+	],
 	bitfinex: [
 		"BTC", "LTC", "ETH", "ETC", "RRT",
 		"ZEC", "XMR", "DSH", "BCC", "BCU",

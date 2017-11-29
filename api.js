@@ -17,6 +17,21 @@ module.exports = {
 				})
 		})
 	},
+	maicoin: () => {
+		return new Promise((resolve, reject) => {
+			axios.get("https://api.maicoin.com/v1/prices/twd")
+				.then((res) => {
+					resolve({
+						title: "*MaiCoin* (NTD)",
+						bid: res.data.sell_price,
+						ask: res.data.buy_price,
+					})
+				})
+				.catch((err) => {
+					reject(`MaiCoin error ${err.message}`)
+				})
+		})
+	},
 	bitfinex: (currency) => {
 		return new Promise((resolve, reject) => {
 			axios.get(`https://api.bitfinex.com/v2/ticker/t${currency}USD`)

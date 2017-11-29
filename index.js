@@ -56,6 +56,10 @@ bot.command("/price", (ctx) => {
 		promises.push(api.bitoex())
 	}
 
+	if (_.includes(supportCurrencies.maicoin, currency)) {
+		promises.push(api.maicoin())
+	}
+
 	if (_.includes(supportCurrencies.bitfinex, currency)) {
 		promises.push(api.bitfinex(currency))
 	}

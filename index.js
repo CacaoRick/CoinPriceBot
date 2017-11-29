@@ -171,7 +171,7 @@ bot.command("/exchange", (ctx) => {
 		.then((results) => {
 			if (currency === "BTC") {
 				const bitoexPrice = results[0].bid
-				const maicoinPrice = results[0].bid
+				const maicoinPrice = results[1].bid
 				let message = `\`${price}\` BTC => \``
 				if (bitoexPrice > maicoinPrice) {
 					message += `${(price * bitoexPrice).toFixed(0)}\` NTD (by BitoEx)`

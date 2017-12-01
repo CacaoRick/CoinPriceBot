@@ -14,6 +14,10 @@ bot.catch((error) => {
 	console.log("error", error.error, error.message)
 })
 
+bot.on("sticker", (ctx) => {
+	console.log(ctx.message.sticker.file_id)
+})
+
 bot.command("/help", (ctx) => {
 	switch (ctx.message.text.split(" ")[1]) {
 		default: {
@@ -61,7 +65,9 @@ bot.command("/price", (ctx) => {
 			if (results) {
 				let detail = ""
 				_.each(results, (result) => {
-					detail += `${result.title}\n買: \`${result.ask}\`\n賣: \`${result.bid}\`\n${result.last ? `Last: \`${result.last}\`\n` : ""}`
+					if (result != null) {
+						detail += `${result.title}\n買: \`${result.ask}\`\n賣: \`${result.bid}\`\n${result.last ? `Last: \`${result.last}\`\n` : ""}`
+					}
 				})
 				ctx.replyWithMarkdown(detail)
 			} else {
@@ -141,6 +147,9 @@ bot.command("/history", (ctx) => {
 			const imageUrl = chart.getUrl(true)
 			ctx.replyWithPhoto(imageUrl)
 		})
+		.catch(() => {
+			ctx.replyWithSticker(`CAADBQADpAUAAhvjNwj5JCqrY5MD6gI`)
+		})
 })
 
 bot.command("/exchange", (ctx) => {
@@ -170,26 +179,37 @@ bot.command("/exchange", (ctx) => {
 	Promise.all(promises)
 		.then((results) => {
 			if (currency === "BTC") {
-				const bitoexPrice = results[0].bid
-				const maicoinPrice = results[1].bid
-				let message = `\`${price}\` BTC => \``
-				if (bitoexPrice > maicoinPrice) {
-					message += `${(price * bitoexPrice).toFixed(0)}\` NTD (by BitoEx)`
+				if (results[0] != null && results[1] != null) {
+					const bitoexPrice = results[0].bid
+					const maicoinPrice = results[1].bid
+					let message = `\`${price}\` BTC => \``
+					if (bitoexPrice > maicoinPrice) {
+						message += `${(price * bitoexPrice).toFixed(0)}\` NTD (by BitoEx)`
+					} else {
+						message += `${(price * maicoinPrice).toFixed(0)}\` NTD (by MaiCoin)`
+					}
+					ctx.replyWithMarkdown(message)
 				} else {
-					message += `${(price * maicoinPrice).toFixed(0)}\` NTD (by MaiCoin)`
+					ctx.replyWithSticker("CAADBQADpAUAAhvjNwj5JCqrY5MD6gI")
+					ctx.replyWithMarkdown(`API 怪怪的，不是我的錯`)
 				}
-				ctx.replyWithMarkdown(message)
 			} else {
-				const btc = price * results[0].last
-				const bitoexPrice = results[1].bid
-				const maicoinPrice = results[2].bid
-				let message = `\`${price}\` ${currency} => \`${btc.toFixed(8)}\` BTC => \``
-				if (bitoexPrice > maicoinPrice) {
-					message += `${(btc * bitoexPrice).toFixed(0)}\` NTD (by BitoEx)`
+				if (results[0] != null && results[1] != null && results[2] != null) {
+
+					const btc = price * results[0].last
+					const bitoexPrice = results[1].bid
+					const maicoinPrice = results[2].bid
+					let message = `\`${price}\` ${currency} => \`${btc.toFixed(8)}\` BTC => \``
+					if (bitoexPrice > maicoinPrice) {
+						message += `${(btc * bitoexPrice).toFixed(0)}\` NTD (by BitoEx)`
+					} else {
+						message += `${(btc * maicoinPrice).toFixed(0)}\` NTD (by MaiCoin)`
+					}
+					ctx.replyWithMarkdown(message)
 				} else {
-					message += `${(btc * maicoinPrice).toFixed(0)}\` NTD (by MaiCoin)`
+					ctx.replyWithSticker("CAADBQADpAUAAhvjNwj5JCqrY5MD6gI")
+					ctx.replyWithMarkdown(`API 怪怪的，不是我的錯`)
 				}
-				ctx.replyWithMarkdown(message)
 			}
 		})
 		.catch((error) => {

@@ -2,7 +2,7 @@ const axios = require("axios")
 
 module.exports = {
 	bitoex: () => {
-		return new Promise((resolve, reject) => {
+		return new Promise((resolve) => {
 			axios.get("https://www.bitoex.com/api/v1/get_rate")
 				.then((res) => {
 					resolve({
@@ -12,12 +12,13 @@ module.exports = {
 					})
 				})
 				.catch((err) => {
-					reject(`BitoEx error ${err.message}`)
+					console.log(`BitoEx error ${err.message}`)
+					resolve(null)
 				})
 		})
 	},
 	maicoin: () => {
-		return new Promise((resolve, reject) => {
+		return new Promise((resolve) => {
 			axios.get("https://api.maicoin.com/v1/prices/twd")
 				.then((res) => {
 					resolve({
@@ -27,12 +28,13 @@ module.exports = {
 					})
 				})
 				.catch((err) => {
-					reject(`MaiCoin error ${err.message}`)
+					console.log(`MaiCoin error ${err.message}`)
+					resolve(null)
 				})
 		})
 	},
 	bitfinex: (currency) => {
-		return new Promise((resolve, reject) => {
+		return new Promise((resolve) => {
 			axios.get(`https://api.bitfinex.com/v2/ticker/t${currency}USD`)
 				.then((res) => {
 					const data = res.data
@@ -44,12 +46,13 @@ module.exports = {
 					})
 				})
 				.catch((err) => {
-					reject(`Bitfinex ${currency}USD error ${err.message}`)
+					console.log(`Bitfinex ${currency}USD error ${err.message}`)
+					resolve(null)
 				})
 		})
 	},
 	bittrex: (currency) => {
-		return new Promise((resolve, reject) => {
+		return new Promise((resolve) => {
 			axios.get("https://bittrex.com/api/v1.1/public/getticker", {
 				params: {
 					market: `BTC-${currency}`,
@@ -67,7 +70,8 @@ module.exports = {
 					}
 				})
 				.catch((err) => {
-					reject(`Bittrex BTC-${currency} error ${err.message}`)
+					console.log(`Bittrex BTC-${currency} error ${err.message}`)
+					resolve(null)
 				})
 		})
 	},

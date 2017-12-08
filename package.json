@@ -8,6 +8,7 @@
   },
   "dependencies": {
     "axios": "^0.16.2",
+    "cloudscraper": "^1.4.1",
     "lodash": "^4.17.4",
     "moment": "^2.18.1",
     "quiche": "^0.3.0",

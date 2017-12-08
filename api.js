@@ -6,7 +6,7 @@ module.exports = {
 		return new Promise((resolve) => {
 			cloudscraper.get("https://www.bitoex.com/api/v1/get_rate", (error, response, body) => {
 				if (error) {
-					console.log(`BitoEx error ${error.message}`)
+					console.log(`BitoEx error ${error}`)
 					resolve(null)
 				} else if (body) {
 					const data = JSON.parse(body)

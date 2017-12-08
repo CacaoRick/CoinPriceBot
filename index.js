@@ -1,8 +1,8 @@
 const _ = require("lodash")
-const axios = require("axios")
 const quiche = require("quiche")
 const moment = require("moment")
 const Telegraf = require("telegraf")
+const cloudscraper = require("cloudscraper")
 
 const api = require("./api")
 const config = require("./config")
@@ -81,9 +81,12 @@ bot.command("/price", (ctx) => {
 
 bot.command("/history", (ctx) => {
 	const params = ctx.message.text.split(" ")[1] ? ctx.message.text.split(" ")[1].toLowerCase() : null
-	axios.get("https://www.bitoex.com/charts/price_history")
-		.then((res) => {
-			let { data } = res
+	cloudscraper.get("https://www.bitoex.com/charts/price_history", (error, response, body) => {
+		if (error) {
+			console.log("/history error", error)
+			ctx.replyWithSticker(`CAADBQADpAUAAhvjNwj5JCqrY5MD6gI`)
+		} else if (body) {
+			let data = JSON.parse(body)
 			const chart = quiche("line")
 			chart.setTitle("BitoEX history (NTD)")
 			chart.setSparklines()
@@ -146,10 +149,10 @@ bot.command("/history", (ctx) => {
 			// 轉成圖片連結
 			const imageUrl = chart.getUrl(true)
 			ctx.replyWithPhoto(imageUrl)
-		})
-		.catch(() => {
+		} else {
 			ctx.replyWithSticker(`CAADBQADpAUAAhvjNwj5JCqrY5MD6gI`)
-		})
+		}
+	})
 })
 
 bot.command("/exchange", (ctx) => {

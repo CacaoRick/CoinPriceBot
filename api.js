@@ -1,20 +1,24 @@
 const axios = require("axios")
+const cloudscraper = require("cloudscraper")
 
 module.exports = {
 	bitoex: () => {
 		return new Promise((resolve) => {
-			axios.get("https://www.bitoex.com/api/v1/get_rate")
-				.then((res) => {
+			cloudscraper.get("https://www.bitoex.com/api/v1/get_rate", (error, response, body) => {
+				if (error) {
+					console.log(`BitoEx error ${error.message}`)
+					resolve(null)
+				} else if (body) {
+					const data = JSON.parse(body)
 					resolve({
 						title: "*BitoEX* (NTD)",
-						bid: res.data.sell,
-						ask: res.data.buy,
+						bid: data.sell,
+						ask: data.buy,
 					})
-				})
-				.catch((err) => {
-					console.log(`BitoEx error ${err.message}`)
+				} else {
 					resolve(null)
-				})
+				}
+			})
 		})
 	},
 	maicoin: () => {

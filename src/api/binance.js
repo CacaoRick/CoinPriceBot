@@ -6,6 +6,7 @@ import axios from "axios"
 
 export default function (currency, base) {
 	return new Promise((resolve, reject) => {
+		base = base == null || base == "USD" ? "USDT" : base
 		return axios.get("https://api.binance.com/api/v1/ticker/allPrices")
 			.then((res) => {
 				const allPrices = res.data
@@ -25,28 +26,16 @@ export default function (currency, base) {
 
 				// 根據 base 幣種整理 message
 				let message = ""
-				if (base) {
-					base = base == "USD" ? "USDT" : base
-					_.each(currencyPrices, (data) => {
-						if (data.symbol.endsWith(base)) {
-							let price = data.price
-							if (base == "USDT") {
-								price = Number(price).toFixed(2)
-							}
-							message = `*Binance* \`${data.price}\` ${base}\n`
+
+				_.each(currencyPrices, (data) => {
+					if (data.symbol.endsWith(base)) {
+						let price = data.price
+						if (base == "USDT") {
+							price = Number(price).toFixed(2)
 						}
-					})
-				} else {
-					// 沒設定 base，找 BTC 和 USDT
-					_.each(currencyPrices, (data) => {
-						if (data.symbol.endsWith("USDT")) {
-							message = `*Binance* \`${Number(data.price).toFixed(2)}\` USDT\n`
-						}
-						if (data.symbol.endsWith("BTC")) {
-							message = `*Binance* \`${data.price}\` BTC\n`
-						}
-					})
-				}
+						message = `*Binance* \`${data.price}\` ${base}\n`
+					}
+				})
 				resolve(message)
 			})
 			.catch((error) => {

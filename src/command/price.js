@@ -95,4 +95,7 @@ export default function (ctx) {
 					}
 				})
 		})
+		.catch((error) => {
+			console.log("Error in /price", error)
+		})
 }

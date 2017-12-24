@@ -27,17 +27,21 @@ export default function (currency, base) {
       if (base) {
         _.each(currencyPrices, (data) => {
           if (data.symbol.endsWith(base)) {
-            message = `Binance ${data.price} ${base}\n`
+            let price = data.price
+            if (base == "USDT") {
+              price = Number(price).toFixed(2)
+            }
+            message = `*Binance* \`${data.price}\` ${base}\n`
           }
         })
       } else {
         // 沒設定 base，找 BTC 和 USDT
         _.each(currencyPrices, (data) => {
+          if (data.symbol.endsWith("USDT")) {
+            message = `Binance ${Number(data.price).toFixed(2)} USDT\n`
+          }
           if (data.symbol.endsWith("BTC")) {
             message = `Binance ${data.price} BTC\n`
-          }
-          if (data.symbol.endsWith("USDT")) {
-            message = `Binance ${data.price} USDT\n`
           }
         })
       }

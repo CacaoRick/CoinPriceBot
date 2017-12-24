@@ -55,6 +55,17 @@ export default function (ctx) {
         })
       promises.push(binance)
 
+      const bitfinex = api.bitfinex(currency, base)
+        .then((message) => {
+          if (message != "") {
+            resultMessages += message
+            return ctx.telegram.editMessageText(ctx.chat.id, result.message_id, null, twdResultMessages + resultMessages, {
+              parse_mode: "Markdown",
+            })
+          }
+        })
+      promises.push(bitfinex)
+
       Promise.all(promises)
         .then(() => {
           if (twdResultMessages == "" && resultMessages == "") {

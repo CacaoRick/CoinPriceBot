@@ -39,10 +39,10 @@ export default function (currency, base) {
         // 沒設定 base，找 BTC 和 USDT
         _.each(currencyPrices, (data) => {
           if (data.symbol.endsWith("USDT")) {
-            message = `Binance ${Number(data.price).toFixed(2)} USDT\n`
+            message = `*Binance* \`${Number(data.price).toFixed(2)}\` USDT\n`
           }
           if (data.symbol.endsWith("BTC")) {
-            message = `Binance ${data.price} BTC\n`
+            message = `*Binance* \`${data.price}\` BTC\n`
           }
         })
       }

@@ -1,0 +1,3 @@
+// https://api.binance.com/api/v1/ticker/allPrices
+// result array of {symbol: "ETHBTC", price: "0.04811600"}, {symbol: "LTCBTC", price: "0.01920700"} ...
+// 再從 array 中找結果

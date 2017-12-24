@@ -1,6 +1,15 @@
-export * from "./binance"
-export * from "./bitfinex"
-export * from "./bitoex"
-export * from "./bittrex"
-export * from "./maicoin"
-export * from "./okex"
+import binance from "./binance"
+import bitfinex from "./bitfinex"
+import bitoex from "./bitoex"
+import bittrex from "./bittrex"
+import maicoin from "./maicoin"
+import okex from "./okex"
+
+export default {
+  binance,
+  bitfinex,
+  bitoex,
+  bittrex,
+  maicoin,
+  okex,
+}

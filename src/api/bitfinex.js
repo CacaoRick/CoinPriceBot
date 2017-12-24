@@ -27,18 +27,17 @@ export default function (currency, base) {
 		return axios.get(`https://api.bitfinex.com/v1/pubticker/${currency}${base}`)
 			.then((res) => {
 				const { data } = res
-
-				if (data.message == "Unknown symbol") {
-					// 找不到該幣種
-					resolve("")
-				}
-
 				let price = base == "USD" ? Number(data.last_price).toFixed(2) : data.last_price
 				resolve(`*Bitfinex* \`${price}\` ${base}\n`)
 			})
 			.catch((error) => {
-				console.log("Error in Bitfinex", error)
-				resolve(`*Bitfinex* ❌`)
+				if (error.response && error.response.data && error.response.data.message == "Unknown symbol") {
+					// 找不到該幣種
+					resolve("")
+				} else {
+					console.log("Error in Bitfinex", error)
+					resolve(`*Bitfinex* ❌`)
+				}
 			})
 	})
 }

@@ -1,5 +1,3 @@
-import axios from "axios"
-
 // https://www.maicoin.com/api/prices/btc-twd
 // https://www.maicoin.com/api/prices/eth-twd
 // https://www.maicoin.com/api/prices/ltc-twd
@@ -19,6 +17,7 @@ import axios from "axios"
 //   raw_sell_price_in_twd: 766862017,
 // }
 
+import axios from "axios"
 const symbols = { BTC: "btc-twd", ETH: "eth-twd", LTC: "ltc-twd" }
 
 export default function (currency) {

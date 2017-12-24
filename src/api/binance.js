@@ -6,7 +6,7 @@ import axios from "axios"
 
 export default function (currency, base) {
 	return new Promise((resolve, reject) => {
-		base = base == null || base == "USD" ? "USDT" : base
+		base = base == "USD" ? "USDT" : base
 		return axios.get("https://api.binance.com/api/v1/ticker/allPrices")
 			.then((res) => {
 				const allPrices = res.data

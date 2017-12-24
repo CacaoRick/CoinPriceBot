@@ -9,7 +9,7 @@ import axios from "axios"
 
 export default function (currency, base) {
 	return new Promise((resolve, reject) => {
-		base = base == null || base == "USD" ? "USDT" : base
+		base = base == "USD" ? "USDT" : base
 		return axios.get(`https://bittrex.com/api/v1.1/public/getticker?market=${base}-${currency}`)
 			.then((res) => {
 				const { result } = res.data

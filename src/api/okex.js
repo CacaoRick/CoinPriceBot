@@ -24,7 +24,7 @@ import axios from "axios"
 
 export default function (currency, base) {
 	return new Promise((resolve, reject) => {
-		base = base == null || base == "USD" ? "USDT" : base
+		base = base == "USD" ? "USDT" : base
 		return axios.get(`https://www.okex.com/api/v1/ticker.do?symbol=${currency}_${base}`)
 			.then((res) => {
 				if (res.data && res.data.ticker) {

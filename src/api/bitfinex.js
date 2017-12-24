@@ -23,7 +23,7 @@ import axios from "axios"
 
 export default function (currency, base) {
 	return new Promise((resolve, reject) => {
-		base = base == null ? "USD" : base
+		base = base == "USDT" ? "USD" : base
 		return axios.get(`https://api.bitfinex.com/v1/pubticker/${currency}${base}`)
 			.then((res) => {
 				const { data } = res

@@ -4,7 +4,10 @@
   "main": "build/index.js",
   "license": "MIT",
   "scripts": {
-    "start": "node ."
+    "start": "node build/index.js",
+    "build": "babel src -d build",
+    "dev": "babel-node src/index.js",
+    "node": "babel-node --"
   },
   "dependencies": {
     "axios": "^0.16.2",
@@ -13,5 +16,10 @@
     "moment": "^2.18.1",
     "quiche": "^0.3.0",
     "telegraf": "^3.11.1"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-core": "^6.26.0",
+    "babel-preset-env": "^1.6.1"
   }
 }

@@ -23,7 +23,7 @@ import axios from "axios"
 
 export default function (currency, base) {
   base = base == null ? "USD" : base
-  return axios.get(`https://api.bitfinex.com/v2/ticker/t${currency}${base}`)
+  return axios.get(`https://api.bitfinex.com/v1/pubticker/${currency}${base}`)
     .then((res) => {
       const { data } = res
 
@@ -32,6 +32,7 @@ export default function (currency, base) {
         return ""
       }
 
-      return `*Bitfinex* \`${data.last_price}\` ${base}\n`
+      let price = base == "USD" ? Number(data.last_price).toFixed(2) : data.last_price
+      return `*Bitfinex* \`${price}\` ${base}\n`
     })
 }

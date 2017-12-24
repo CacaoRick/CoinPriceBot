@@ -31,18 +31,6 @@ export default function (currency, base) {
 					const { ticker } = res.data
 					let price = base == "USDT" ? Number(ticker.last).toFixed(2) : ticker.last
 					resolve(`*OkEx* \`${price}\` ${base}\n`)
-				} else if (base == "USDT") {
-					// 找不到 USDT 找 BTC
-					return axios.get(`https://www.okex.com/api/v1/ticker.do?symbol=${currency}_BTC`)
-						.then((res) => {
-							if (res.data && res.data.ticker) {
-								const { ticker } = res.data
-								let price = base == "USDT" ? Number(ticker.last).toFixed(2) : ticker.last
-								resolve(`*OkEx* \`${price}\` BTC\n`)
-							} else {
-								resolve("")
-							}
-						})
 				} else {
 					resolve("")
 				}

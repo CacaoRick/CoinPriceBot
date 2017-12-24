@@ -1,11 +1,9 @@
 import help from "./help"
 import price from "./price"
-import buy from "./buy"
-import sell from "./sell"
+import exchange from "./exchange"
 
 export default {
 	help,
 	price,
-	buy,
-	sell,
+	exchange,
 }

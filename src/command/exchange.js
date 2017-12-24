@@ -3,8 +3,12 @@ import api from "../api"
 export default function (ctx) {
 	const command = ctx.message.text.split(" ")
 	if (command.length != 3) {
-		ctx.replyWithMarkdown("參數怪怪der，範例：\n`/buy 50.3 mco`")
+		ctx.replyWithMarkdown(`參數怪怪der，範例：\n\`${command[0]} 50.3 mco\``)
 		return
+	}
+	let action = command[0].replace("/", "")
+	if (action == "exchange") {
+		action = "sell"
 	}
 	const amount = Number(command[1])
 	const currency = command[2].toUpperCase()
@@ -14,7 +18,7 @@ export default function (ctx) {
 		return
 	}
 
-	console.log(`/buy ${amount} ${currency}`)
+	console.log(`/${action} ${amount} ${currency}`)
 
 	let messageResult = ""
 	if (currency != "BTC") {
@@ -33,23 +37,31 @@ export default function (ctx) {
 					btcPrice = (amount * Number(results[1])).toFixed(8)
 					platform = "Bitfinex"
 				}
-				messageResult += `\`${btcPrice}\` BTC (by ${platform})\n`
-				return ctx.reply(messageResult, {
-					reply_to_message_id: ctx.message.message_id,
-					parse_mode: "Markdown",
-				})
-					.then((result) => {
-						return getTwdPrice(btcPrice)
-							.then((message) => {
-								messageResult += message
-								return ctx.telegram.editMessageText(ctx.chat.id, result.message_id, null, messageResult, {
-									parse_mode: "Markdown",
-								})
-							})
+
+				if (btcPrice == null) {
+					return ctx.reply("交易所API異常或不支援該幣種", {
+						reply_to_message_id: ctx.message.message_id,
+						parse_mode: "Markdown",
 					})
+				} else {
+					messageResult += `\`${btcPrice}\` BTC (${platform})\n`
+					return ctx.reply(messageResult, {
+						reply_to_message_id: ctx.message.message_id,
+						parse_mode: "Markdown",
+					})
+						.then((result) => {
+							return getTwdPrice(action, btcPrice)
+								.then((message) => {
+									messageResult += message
+									return ctx.telegram.editMessageText(ctx.chat.id, result.message_id, null, messageResult, {
+										parse_mode: "Markdown",
+									})
+								})
+						})
+				}
 			})
 			.catch((error) => {
-				console.log("Error in /buy", ctx.message.text, error)
+				console.log(`Error in /${action}`, ctx.message.text, error)
 				return ctx.telegram.editMessageText(ctx.chat.id, result.message_id, null, `好像錯誤了`)
 			})
 	} else {
@@ -58,7 +70,7 @@ export default function (ctx) {
 			parse_mode: "Markdown",
 		})
 			.then((result) => {
-				return getTwdPrice(amount)
+				return getTwdPrice(action, amount)
 					.then((message) => {
 						messageResult += message
 						return ctx.telegram.editMessageText(ctx.chat.id, result.message_id, null, messageResult, {
@@ -69,21 +81,23 @@ export default function (ctx) {
 	}
 }
 
-function getTwdPrice(btcPrice) {
+function getTwdPrice(action, btcPrice) {
 	return new Promise((resolve, reject) => {
 		const promises = []
 		promises.push(api.bitoex(true))
 		promises.push(api.maicoin("BTC", true))
 		Promise.all(promises)
 			.then((results) => {
-				let bitoexPrice = Number(results[0].buy) > 0 ? Number(results[0].buy) : null
-				let maicoinPrice = Number(results[1].buy) > 0 ? Number(results[1].buy) : null
-				console.log(btcPrice, bitoexPrice, maicoinPrice)
+				let bitoexPrice = Number(results[0][action]) > 0 ? Number(results[0][action]) : null
+				let maicoinPrice = Number(results[1][action]) > 0 ? Number(results[1][action]) : null
 				let twdPrice = null
 				let platform = null
-				if (bitoexPrice && maicoinPrice) {
+				if (action == "buy" && bitoexPrice && maicoinPrice) {
 					twdPrice = bitoexPrice <= maicoinPrice ? btcPrice * bitoexPrice : btcPrice * maicoinPrice
 					platform = bitoexPrice <= maicoinPrice ? "BitoEx" : "MaiCoin"
+				} else if (action == "sell" && bitoexPrice && maicoinPrice) {
+					twdPrice = bitoexPrice >= maicoinPrice ? btcPrice * bitoexPrice : btcPrice * maicoinPrice
+					platform = bitoexPrice >= maicoinPrice ? "BitoEx" : "MaiCoin"
 				} else if (bitoexPrice) {
 					twdPrice = btcPrice * bitoexPrice
 					platform = "BitoEx"
@@ -93,14 +107,14 @@ function getTwdPrice(btcPrice) {
 				}
 
 				if (twdPrice && platform) {
-					resolve(`\`${twdPrice.toFixed(0)}\` TWD (by ${platform})`)
+					resolve(`\`${twdPrice.toFixed(0)}\` TWD (${platform})`)
 				} else {
 					// 沒有結果
 					resolve("API 異常，無法換算 TWD")
 				}
 			})
 			.catch((error) => {
-				console.log("Error in /buy getTwdPrice")
+				console.log(`Error in /${action} getTwdPrice`)
 				resolve("API 異常，無法換算 TWD")
 			})
 	})

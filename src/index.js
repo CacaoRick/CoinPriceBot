@@ -10,7 +10,8 @@ bot.catch((error) => {
 
 bot.command("/help", command.help)
 bot.command("/price", command.price)
-bot.command("/buy", command.buy)
-bot.command("/sell", command.sell)
+bot.command("/buy", command.exchange)
+bot.command("/sell", command.exchange)
+bot.command("/exchange", command.exchange)
 
 bot.startPolling()

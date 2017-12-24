@@ -13,8 +13,8 @@ export default function (currency, base) {
     .then((res) => {
       const { result } = res.data
       if (result) {
-        let price = base == "USDT" ? Number(data.last_price).toFixed(2) : data.last_price
-        return `*Bittrex* \`${result.Last}\` ${base}\n`
+        let price = base == "USDT" ? Number(result.Last).toFixed(2) : result.Last
+        return `*Bittrex* \`${price}\` ${base}\n`
       } else {
         // 無結果
         return ""

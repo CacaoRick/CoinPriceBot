@@ -2,13 +2,20 @@
 // 需用 cloudscraper
 // {"buy":493180,"sell":418248,"timestamp":1514106458}
 
-import axios from "axios"
+import cloudscraper from "cloudscraper"
 
 export default function (plain) {
 	return new Promise((resolve, reject) => {
-		return axios.get(`https://www.bitoex.com/api/v1/get_rate`)
-			.then((res) => {
-				const { data } = res
+		cloudscraper.get("https://www.bitoex.com/api/v1/get_rate", (error, response, body) => {
+			if (error) {
+				console.log("Error in BitoEx", error)
+				if (plain) {
+					resolve(null)
+				} else {
+					resolve(`*BitoEx* ❌\n`)
+				}
+			} else if (body) {
+				const data = JSON.parse(body)
 				if (plain) {
 					resolve({
 						buy: data.buy.toFixed(0),
@@ -17,14 +24,11 @@ export default function (plain) {
 				} else {
 					resolve(`*BitoEx* TWD\n買: \`${data.buy.toFixed(0)}\`\n賣: \`${data.sell.toFixed(0)}\`\n`)
 				}
-			})
-			.catch((error) => {
-				console.log("Error in BitoEx", error)
-				if (plain) {
-					resolve(null)
-				} else {
-					resolve(`*BitoEx* ❌\n`)
-				}
-			})
+			} else if (plain) {
+				resolve(null)
+			} else {
+				resolve("")
+			}
+		})
 	})
 }

@@ -18,12 +18,7 @@ export default function (ctx) {
 
       // 多找 BitoEx
       if (currency == "BTC") {
-
-      }
-
-      // 多找 MaiCoin
-      if (currency == "BTC" || currency == "ETH" || currency == "LTC") {
-        const binance = api.maicoin(currency)
+        const bitoex = api.bitoex()
           .then((message) => {
             if (message != "") {
               twdResultMessages += message
@@ -32,7 +27,21 @@ export default function (ctx) {
               })
             }
           })
-        promises.push(binance)
+        promises.push(bitoex)
+      }
+
+      // 多找 MaiCoin
+      if (currency == "BTC" || currency == "ETH" || currency == "LTC") {
+        const maicoin = api.maicoin(currency)
+          .then((message) => {
+            if (message != "") {
+              twdResultMessages += message
+              return ctx.telegram.editMessageText(ctx.chat.id, result.message_id, null, twdResultMessages + resultMessages, {
+                parse_mode: "Markdown",
+              })
+            }
+          })
+        promises.push(maicoin)
       }
 
       const binance = api.binance(currency, base)

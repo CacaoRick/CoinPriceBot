@@ -5,13 +5,15 @@
 import axios from "axios"
 
 export default function (currncy) {
-  return axios.get(`https://www.bitoex.com/api/v1/get_rate`)
-    .then((res) => {
-      const { data } = res
-      return `*BitoEx* TWD\n買: \`${data.buy.toFixed(0)}\`\n賣: \`${data.sell.toFixed(0)}\`\n`
-    })
-    .catch((error) => {
-      console.log("Error in bitoex", error)
-      return ""
-    })
+	return new Promise((resolve, reject) => {
+		return axios.get(`https://www.bitoex.com/api/v1/get_rate`)
+			.then((res) => {
+				const { data } = res
+				resolve(`*BitoEx* TWD\n買: \`${data.buy.toFixed(0)}\`\n賣: \`${data.sell.toFixed(0)}\`\n`)
+			})
+			.catch((error) => {
+				console.log("Error in BitoEx", error)
+				resolve(`*BitoEx* ❌`)
+			})
+	})
 }

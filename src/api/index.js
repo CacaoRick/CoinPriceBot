@@ -6,10 +6,10 @@ import maicoin from "./maicoin"
 import okex from "./okex"
 
 export default {
-  binance,
-  bitfinex,
-  bitoex,
-  bittrex,
-  maicoin,
-  okex,
+	binance,
+	bitfinex,
+	bitoex,
+	bittrex,
+	maicoin,
+	okex,
 }

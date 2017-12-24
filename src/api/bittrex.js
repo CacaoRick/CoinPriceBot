@@ -8,16 +8,22 @@
 import axios from "axios"
 
 export default function (currency, base) {
-  base = base == null || base == "USD" ? "USDT" : base
-  return axios.get(`https://bittrex.com/api/v1.1/public/getticker?market=${base}-${currency}`)
-    .then((res) => {
-      const { result } = res.data
-      if (result) {
-        let price = base == "USDT" ? Number(result.Last).toFixed(2) : result.Last
-        return `*Bittrex* \`${price}\` ${base}\n`
-      } else {
-        // 無結果
-        return ""
-      }
-    })
+	return new Promise((resolve, reject) => {
+		base = base == null || base == "USD" ? "USDT" : base
+		return axios.get(`https://bittrex.com/api/v1.1/public/getticker?market=${base}-${currency}`)
+			.then((res) => {
+				const { result } = res.data
+				if (result) {
+					let price = base == "USDT" ? Number(result.Last).toFixed(2) : result.Last
+					resolve(`*Bittrex* \`${price}\` ${base}\n`)
+				} else {
+					// 無結果
+					resolve("")
+				}
+			})
+			.catch((error) => {
+				console.log("Error in Bittrex", error)
+				resolve(`*Bittrex* ❌`)
+			})
+	})
 }

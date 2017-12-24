@@ -22,17 +22,23 @@
 import axios from "axios"
 
 export default function (currency, base) {
-  base = base == null ? "USD" : base
-  return axios.get(`https://api.bitfinex.com/v1/pubticker/${currency}${base}`)
-    .then((res) => {
-      const { data } = res
+	return new Promise((resolve, reject) => {
+		base = base == null ? "USD" : base
+		return axios.get(`https://api.bitfinex.com/v1/pubticker/${currency}${base}`)
+			.then((res) => {
+				const { data } = res
 
-      if (data.message == "Unknown symbol") {
-        // 找不到該幣種
-        return ""
-      }
+				if (data.message == "Unknown symbol") {
+					// 找不到該幣種
+					resolve("")
+				}
 
-      let price = base == "USD" ? Number(data.last_price).toFixed(2) : data.last_price
-      return `*Bitfinex* \`${price}\` ${base}\n`
-    })
+				let price = base == "USD" ? Number(data.last_price).toFixed(2) : data.last_price
+				resolve(`*Bitfinex* \`${price}\` ${base}\n`)
+			})
+			.catch((error) => {
+				console.log("Error in Bitfinex", error)
+				resolve(`*Bitfinex* ❌`)
+			})
+	})
 }

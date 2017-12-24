@@ -39,7 +39,7 @@ export default function (currency, plain) {
 				if (plain) {
 					resolve(null)
 				} else {
-					resolve(`*MaiCoin* ❌`)
+					resolve(`*MaiCoin* ❌\n`)
 				}
 			})
 	})

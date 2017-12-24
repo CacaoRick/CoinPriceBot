@@ -52,7 +52,7 @@ export default function (currency, base, plain) {
 				if (plain) {
 					resolve(null)
 				} else {
-					resolve(`*Binance* ❌`)
+					resolve(`*Binance* ❌\n`)
 				}
 			})
 	})

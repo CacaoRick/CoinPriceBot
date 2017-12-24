@@ -23,7 +23,7 @@ export default function (plain) {
 				if (plain) {
 					resolve(null)
 				} else {
-					resolve(`*BitoEx* ❌`)
+					resolve(`*BitoEx* ❌\n`)
 				}
 			})
 	})

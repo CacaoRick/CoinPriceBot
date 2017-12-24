@@ -25,6 +25,7 @@ export default function (currency, base) {
       // 根據 base 幣種整理 message
       let message = ""
       if (base) {
+        base = base == "USD" ? "USDT" : base
         _.each(currencyPrices, (data) => {
           if (data.symbol.endsWith(base)) {
             let price = data.price

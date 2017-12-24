@@ -77,6 +77,17 @@ export default function (ctx) {
         })
       promises.push(bittrex)
 
+      const okex = api.okex(currency, base)
+        .then((message) => {
+          if (message != "") {
+            resultMessages += message
+            return ctx.telegram.editMessageText(ctx.chat.id, result.message_id, null, twdResultMessages + resultMessages, {
+              parse_mode: "Markdown",
+            })
+          }
+        })
+      promises.push(okex)
+
       Promise.all(promises)
         .then(() => {
           if (twdResultMessages == "" && resultMessages == "") {

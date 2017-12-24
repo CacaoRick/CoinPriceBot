@@ -3,7 +3,7 @@ import api from "../api"
 export default function (ctx) {
 	const command = ctx.message.text.split(" ")
 	const currency = command[1] ? command[1].toUpperCase() : "BTC"
-	const base = command[2] ? command[2].toUpperCase() : null
+	const base = command[2] ? command[2].toUpperCase() : "USD"
 
 	console.log(`/price ${currency} ${base}`)
 
@@ -91,7 +91,7 @@ export default function (ctx) {
 			Promise.all(promises)
 				.then(() => {
 					if (twdResultMessages == "" && resultMessages == "") {
-						return ctx.telegram.editMessageText(ctx.chat.id, result.message_id, null, `${currency}-${base} 查無結果`)
+						return ctx.telegram.editMessageText(ctx.chat.id, result.message_id, null, `${currency}${base ? "-" + base : ""} 查無結果`)
 					}
 				})
 		})

@@ -1,3 +1,5 @@
+import axios from "axios"
+
 // https://www.maicoin.com/api/prices/btc-twd
 // https://www.maicoin.com/api/prices/eth-twd
 // https://www.maicoin.com/api/prices/ltc-twd

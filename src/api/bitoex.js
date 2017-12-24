@@ -4,7 +4,7 @@
 
 import axios from "axios"
 
-export default function (currncy) {
+export default function () {
 	return new Promise((resolve, reject) => {
 		return axios.get(`https://www.bitoex.com/api/v1/get_rate`)
 			.then((res) => {

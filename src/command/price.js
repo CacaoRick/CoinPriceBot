@@ -13,6 +13,7 @@ export default function (ctx) {
   })
     .then((result) => {
       const promises = []
+      let twdResultMessages = ""
       let resultMessages = ""
 
       // 多找 BitoEx
@@ -25,8 +26,8 @@ export default function (ctx) {
         const binance = api.maicoin(currency)
           .then((message) => {
             if (message != "") {
-              resultMessages += message
-              return ctx.telegram.editMessageText(ctx.chat.id, result.message_id, null, resultMessages, {
+              twdResultMessages += message
+              return ctx.telegram.editMessageText(ctx.chat.id, result.message_id, null, twdResultMessages + resultMessages, {
                 parse_mode: "Markdown",
               })
             }
@@ -38,7 +39,7 @@ export default function (ctx) {
         .then((message) => {
           if (message != "") {
             resultMessages += message
-            return ctx.telegram.editMessageText(ctx.chat.id, result.message_id, null, resultMessages, {
+            return ctx.telegram.editMessageText(ctx.chat.id, result.message_id, null, twdResultMessages + resultMessages, {
               parse_mode: "Markdown",
             })
           }
@@ -47,7 +48,7 @@ export default function (ctx) {
 
       Promise.all(promises)
         .then(() => {
-          if (resultMessages == "") {
+          if (twdResultMessages == "" && resultMessages == "") {
             return ctx.telegram.editMessageText(ctx.chat.id, result.message_id, null, `${currency}-${base} 查無結果`)
           }
         })

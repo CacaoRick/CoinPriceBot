@@ -16,3 +16,17 @@
 //   raw_sell_price: 766862017,
 //   raw_sell_price_in_twd: 766862017,
 // }
+
+export const symbols = { BTC: "btc-twd", BTC: "eth-twd", BTC: "ltc-twd" }
+
+export default function (currency) {
+  return axios.get(`https://www.maicoin.com/api/prices/${symbols[currency]}`)
+    .then((res) => {
+      const { data } = res
+      return `*MaiCoin* TWD\n買: \`${(Number(data.raw_buy_price) / 1000000).toFixed(0)}\`\n賣: \`${(Number(data.raw_sell_price) / 1000000).toFixed(0)}\`\n`
+    })
+    .catch((error) => {
+      console.log("Error in maicoin", error)
+      return ""
+    })
+}

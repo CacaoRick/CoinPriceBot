@@ -2,7 +2,7 @@
   "apps": [
     {
       "name": "Coin Price Bot",
-      "script": "./index.js",
+      "script": "./build/index.js",
       "watch": true
     }
   ]

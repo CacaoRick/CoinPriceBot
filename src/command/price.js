@@ -22,7 +22,16 @@ export default function (ctx) {
 
       // 多找 MaiCoin
       if (currency == "BTC" || currency == "ETH" || currency == "LTC") {
-
+        const binance = api.maicoin(currency)
+          .then((message) => {
+            if (message != "") {
+              resultMessages += message
+              return ctx.telegram.editMessageText(ctx.chat.id, result.message_id, null, resultMessages, {
+                parse_mode: "Markdown",
+              })
+            }
+          })
+        promises.push(binance)
       }
 
       const binance = api.binance(currency, base)

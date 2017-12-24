@@ -20,16 +20,27 @@
 import axios from "axios"
 const symbols = { BTC: "btc-twd", ETH: "eth-twd", LTC: "ltc-twd" }
 
-export default function (currency) {
+export default function (currency, plain) {
 	return new Promise((resolve, reject) => {
 		return axios.get(`https://www.maicoin.com/api/prices/${symbols[currency]}`)
 			.then((res) => {
 				const { data } = res
-				resolve(`*MaiCoin* TWD\n買: \`${(Number(data.raw_buy_price) / 100000).toFixed(0)}\`\n賣: \`${(Number(data.raw_sell_price) / 100000).toFixed(0)}\`\n`)
+				if (plain) {
+					resolve({
+						buy: (Number(data.raw_buy_price) / 100000).toFixed(0),
+						sell: (Number(data.raw_sell_price) / 100000).toFixed(0),
+					})
+				} else {
+					resolve(`*MaiCoin* TWD\n買: \`${(Number(data.raw_buy_price) / 100000).toFixed(0)}\`\n賣: \`${(Number(data.raw_sell_price) / 100000).toFixed(0)}\`\n`)
+				}
 			})
 			.catch((error) => {
 				console.log("Error in MaiCoin", error)
-				resolve(`*MaiCoin* ❌`)
+				if (plain) {
+					resolve(null)
+				} else {
+					resolve(`*MaiCoin* ❌`)
+				}
 			})
 	})
 }

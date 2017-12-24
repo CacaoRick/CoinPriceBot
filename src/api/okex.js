@@ -38,7 +38,7 @@ export default function (currency, base) {
 							if (res.data && res.data.ticker) {
 								const { ticker } = res.data
 								let price = base == "USDT" ? Number(ticker.last).toFixed(2) : ticker.last
-								resolve(`*OkEx* \`${price}\` ${base}\n`)
+								resolve(`*OkEx* \`${price}\` BTC\n`)
 							} else {
 								resolve("")
 							}

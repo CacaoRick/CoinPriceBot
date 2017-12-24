@@ -1,7 +1,16 @@
-const helpMessage = `/price \`[btc|xmr|eth|...]\`
-察看目前的價錢 (BitoEX, Bitfinex, Bittrex)
-/exchange \`<0.1>\` \`[btc|xmr|eth|...]\`
-計算可以換成多少台幣`
+const helpMessage = `/price \`[幣種] [幣種]\`
+察看目前的價格，預設以 USD 查詢，例如：
+\`/price eth\`
+後方可加上第二種貨幣，例如要查 ETH-BTC 價格：
+\`/price eth btc\`
+
+/sell \`<數量> [幣種]\`
+計算可以換成多少台幣，例如：
+\`/sell 0.3 xmr\`
+
+/buy \`<數量> [幣種]\`
+計算要多少台幣可以買到，例如：
+\`/buy 50.3 mco\``
 
 export default function (ctx) {
 	if (ctx.chat.type == "group") {

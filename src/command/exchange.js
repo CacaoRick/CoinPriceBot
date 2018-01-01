@@ -7,7 +7,7 @@ export default function (ctx) {
 		return
 	}
 	let action = command[0].replace("/", "")
-	if (action == "exchange") {
+	if (action == "exchange" || action.startsWith("sell")) {
 		action = "sell"
 	}
 	const amount = Number(command[1])

@@ -10,6 +10,9 @@ export default function (ctx) {
 	if (action == "exchange" || action.startsWith("sell")) {
 		action = "sell"
 	}
+	if (action.startsWith("buy")) {
+		action = "buy"
+	}
 	const amount = Number(command[1])
 	const currency = command[2].toUpperCase()
 

@@ -10,7 +10,11 @@ const helpMessage = `/price \`[幣種] [幣種]\`
 
 /buy \`<數量> <幣種>\`
 計算要多少台幣可以買到，例如：
-\`/buy 50.3 mco\``
+\`/buy 50.3 mco\`
+
+/avg \`<數量> <幣種>\`
+換算為台幣均價，例如：
+\`/avg 1.2 eth\``
 
 export default function (ctx) {
 	if (ctx.chat.type == "group") {

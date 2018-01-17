@@ -27,7 +27,7 @@ export default function (currency, plain) {
 				const { data } = res
 				const buy = (Number(data.raw_buy_price) / 100000).toFixed(0)
 				const sell = (Number(data.raw_sell_price) / 100000).toFixed(0)
-				const avg = (Number(data.raw_buy_price) + Number(data.raw_sell_price) / 200000).toFixed(0)
+				const avg = ((Number(data.raw_buy_price) + Number(data.raw_sell_price)) / 200000).toFixed(0)
 				if (plain) {
 					resolve({
 						buy,

@@ -23,6 +23,8 @@ import axios from "axios"
 
 export default function (currency, base, plain) {
 	return new Promise((resolve, reject) => {
+		// 讓 currency 能接受 IOTA
+		currency = currency == "iota" || currency == "IOTA" ? "IOT" : currency
 		base = base == "USDT" ? "USD" : base
 		return axios.get(`https://api.bitfinex.com/v1/pubticker/${currency}${base}`)
 			.then((res) => {
@@ -31,7 +33,8 @@ export default function (currency, base, plain) {
 				if (plain) {
 					resolve(price)
 				} else {
-					resolve(`*Bitfinex* \`${price}\` ${base}\n`)
+					// 如果 base 是 USD 跟其他交易所一起統一顯示為 USDT
+					resolve(`*Bitfinex* \`${price}\` ${base == "USD" ? "USDT" : base}\n`)
 				}
 			})
 			.catch((error) => {

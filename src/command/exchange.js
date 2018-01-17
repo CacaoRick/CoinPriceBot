@@ -16,8 +16,13 @@ export default function (ctx) {
 	const amount = Number(command[1])
 	const currency = command[2].toUpperCase()
 
-	if (!isFinite(amount) || amount <= 0) {
+	if (!isFinite(amount)) {
 		ctx.replyWithSticker("CAADBQADKwMAAonzDAUWfMQlaopeRwI")
+		return
+	}
+
+	if (isNaN(amount) || amount <= 0 || !isNaN(currency)) {
+		ctx.replyWithMarkdown(`參數怪怪der，範例：\n\`${command[0]} 50.3 mco\``)
 		return
 	}
 

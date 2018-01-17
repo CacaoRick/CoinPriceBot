@@ -25,13 +25,17 @@ export default function (currency, plain) {
 		return axios.get(`https://www.maicoin.com/api/prices/${symbols[currency]}`)
 			.then((res) => {
 				const { data } = res
+				const buy = (Number(data.raw_buy_price) / 100000).toFixed(0)
+				const sell = (Number(data.raw_sell_price) / 100000).toFixed(0)
+				const avg = (Number(data.raw_buy_price) + Number(data.raw_sell_price) / 200000).toFixed(0)
 				if (plain) {
 					resolve({
-						buy: (Number(data.raw_buy_price) / 100000).toFixed(0),
-						sell: (Number(data.raw_sell_price) / 100000).toFixed(0),
+						buy,
+						sell,
+						avg,
 					})
 				} else {
-					resolve(`*MaiCoin* TWD\n買: \`${(Number(data.raw_buy_price) / 100000).toFixed(0)}\`\n賣: \`${(Number(data.raw_sell_price) / 100000).toFixed(0)}\`\n`)
+					resolve(`*MaiCoin* TWD\n買: \`${buy}\`\n賣: \`${sell}\`\n均: \`${avg}\`\n`)
 				}
 			})
 			.catch((error) => {

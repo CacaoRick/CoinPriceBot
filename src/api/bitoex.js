@@ -15,14 +15,18 @@ export default function (plain) {
 					resolve(`*BitoEx* ❌\n`)
 				}
 			} else if (body) {
-				const data = JSON.parse(body)
-				if (plain) {
-					resolve({
-						buy: data.buy.toFixed(0),
-						sell: data.sell.toFixed(0),
-					})
-				} else {
-					resolve(`*BitoEx* TWD\n買: \`${data.buy.toFixed(0)}\`\n賣: \`${data.sell.toFixed(0)}\`\n`)
+				try {
+					const data = JSON.parse(body)
+					if (plain) {
+						resolve({
+							buy: data.buy.toFixed(0),
+							sell: data.sell.toFixed(0),
+						})
+					} else {
+						resolve(`*BitoEx* TWD\n買: \`${data.buy.toFixed(0)}\`\n賣: \`${data.sell.toFixed(0)}\`\n`)
+					}
+				} catch (error) {
+					resolve(`*BitoEx* ❌\n`)
 				}
 			} else if (plain) {
 				resolve(null)

@@ -4,13 +4,17 @@ const helpMessage = `/price \`[幣種] [幣種]\`
 後方可加上第二種貨幣，例如要查 ETH-BTC 價格：
 \`/price eth btc\`
 
-/sell \`<數量> [幣種]\`
+/sell \`<數量> <幣種>\`
 計算可以換成多少台幣，例如：
 \`/sell 0.3 xmr\`
 
-/buy \`<數量> [幣種]\`
+/buy \`<數量> <幣種>\`
 計算要多少台幣可以買到，例如：
-\`/buy 50.3 mco\``
+\`/buy 50.3 mco\`
+
+/avg \`<數量> <幣種>\`
+換算為台幣均價，例如：
+\`/avg 1.2 eth\``
 
 export default function (ctx) {
 	if (ctx.chat.type == "group") {

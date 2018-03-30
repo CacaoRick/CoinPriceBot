@@ -24,6 +24,8 @@ import axios from "axios"
 
 export default function (currency, base) {
 	return new Promise((resolve, reject) => {
+		// 讓 currency 能接受 IOT
+		currency = currency == "iot" || currency == "IOT" ? "IOTA" : currency
 		base = base == "USD" ? "USDT" : base
 		return axios.get(`https://www.okex.com/api/v1/ticker.do?symbol=${currency}_${base}`)
 			.then((res) => {

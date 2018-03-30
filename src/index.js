@@ -12,6 +12,7 @@ bot.command("/help", command.help)
 bot.command("/price", command.price)
 bot.command("/buy", command.exchange)
 bot.command("/sell", command.exchange)
+bot.command("/avg", command.exchange)
 bot.command("/exchange", command.exchange)
 bot.command("/blockHeight", command.blockHeight)
 

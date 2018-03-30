@@ -28,9 +28,9 @@ export default function (plain) {
 						})
 					} else {
 						resolve(`*BitoEx* TWD\n買: \`${buy}\`\n賣: \`${sell}\`\n均: \`${avg}\`\n`)
-					} catch (error) {
-						resolve(`*BitoEx* ❌\n`)
 					}
+				} catch (error) {
+					resolve(`*BitoEx* ❌\n`)
 				}
 			} else if (plain) {
 				resolve(null)

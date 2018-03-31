@@ -186,9 +186,7 @@ const updateMessage = () => {
 		let statusMessage = `Message update at: \`${moment().format("M/D HH:mm:ss")}\`\n`
 
 		// 加上每個 Symbol 的訊息
-		console.log("prices", prices)
 		_.each(group.symbols, (symbol) => {
-			console.log("symbol", symbol)
 			priceMessage += `${symbol}: \`${parseFloat(prices[symbol].price).toFixed(2)}\` | \n`
 			statusMessage += `${symbol}: \`${moment(prices[symbol].update, "X").format("M/D HH:mm:ss")}\`\n`
 		})

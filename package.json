@@ -15,6 +15,7 @@
     "cloudscraper": "^1.4.1",
     "lodash": "^4.17.4",
     "moment": "^2.18.1",
+    "node-binance-api": "^0.4.26",
     "quiche": "^0.3.0",
     "telegraf": "^3.11.1"
   },

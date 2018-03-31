@@ -13,5 +13,7 @@ bot.command("/sell", command.exchange)
 bot.command("/avg", command.exchange)
 bot.command("/exchange", command.exchange)
 bot.command("/blockHeight", command.blockHeight)
+bot.command("/wsprice", command.wsprice.start)
+bot.command("/wspriceStop", command.wsprice.stop)
 
 bot.startPolling()

@@ -187,8 +187,9 @@ const updateMessage = () => {
 
 		// 加上每個 Symbol 的訊息
 		_.each(group.symbols, (symbol) => {
-			priceMessage += `${symbol}: \`${parseFloat(prices[symbol].price).toFixed(2)}\` | \n`
-			statusMessage += `${symbol}: \`${moment(prices[symbol].update, "X").format("M/D HH:mm:ss")}\`\n`
+			const displaySymbol = symbol.replace("USDT", "")
+			priceMessage += `${displaySymbol}: \`${parseFloat(prices[symbol].price).toFixed(2)}\` | \n`
+			statusMessage += `${displaySymbol}: \`${moment(prices[symbol].update, "X").format("M/D HH:mm:ss")}\`\n`
 		})
 
 		// 更新價格

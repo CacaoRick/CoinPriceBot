@@ -73,6 +73,9 @@ export default {
 
 							// Pin 訊息
 							bot.telegram.pinChatMessage(ctx.chat.id, results[0].message_id, { disable_notification: true })
+								.catch((error) => {
+									console.log(error.message)
+								})
 
 							// 先更新一次訊息顯示現在價格
 							updateMessage()
@@ -107,6 +110,9 @@ export default {
 					})
 					// 拿掉 Pin 的訊息
 					bot.telegram.unpinChatMessage(ctx.chat.id)
+						.catch((error) => {
+							console.log(error.message)
+						})
 				}
 			})
 		// .catch((error) => {

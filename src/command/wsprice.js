@@ -4,7 +4,6 @@ import binance from "node-binance-api"
 import config from "../../config"
 import bot from "../bot"
 
-moment.tz("Asia/Taipei")
 const updateTimeSeconds = config.wsPriceUpdateTime ? config.wsPriceUpdateTime : 10
 const updateTime = config.wsPriceUpdateTime * 1000
 
@@ -85,6 +84,8 @@ const start = (ctx, commands) => {
 				start: true,
 				symbols,
 			})
+
+			console.log(symbols)
 
 			// 設定 Socket
 			manageSocket()
@@ -189,7 +190,7 @@ const updateMessage = () => {
 		}
 		// 設定訊息
 		let priceMessage = ``
-		let statusMessage = `Message update at: \`${moment().format("M/D HH:mm:ss")}\`\n`
+		let statusMessage = `Message update at: \`${moment().tz("Asia/Taipei").format("M/D HH:mm:ss")}\`\n`
 
 		// 加上每個 Symbol 的訊息
 		_.each(group.symbols, (symbol) => {
@@ -202,20 +203,23 @@ const updateMessage = () => {
 			const price = parseFloat(prices[symbol].price)
 			const factoryDigital = price > 1000 ? 1 : 2
 			priceMessage += `${displaySymbol} \`${price.toFixed(factoryDigital)}\``
-			statusMessage += `${displaySymbol}: \`${moment(prices[symbol].update, "X").format("M/D HH:mm:ss")}\``
+			statusMessage += `${displaySymbol}: \`${moment(prices[symbol].update, "X").tz("Asia/Taipei").format("M/D HH:mm:ss")}\``
 		})
 
 		// 更新價格
-		bot.telegram.editMessageText(key, group.priceMessageId, null, priceMessage, {
-			parse_mode: "Markdown",
-		}).then(() => {
-			// 更新狀態
-			bot.telegram.editMessageText(key, group.statusMessageId, null, statusMessage, {
-				parse_mode: "Markdown",
-			})
-		})
-			.catch((error) => {
-				console.log(error)
-			})
+		editMessageWithRetry(key, group.priceMessageId, priceMessage, 0)
+		// 更新狀態
+		editMessageWithRetry(key, group.statusMessageId, statusMessage, 0)
 	})
+}
+
+// editMessage 會重試 2 次
+function editMessageWithRetry(chatId, messageId, message, retryCount) {
+	if (retryCount < 2) {
+		bot.telegram.editMessageText(chatId, messageId, null, message, { parse_mode: "Markdown" })
+			.catch((error) => {
+				console.log(`Edit message error, retry: ${retryCount + 1}`, error.description)
+				editMessageWithRetry(chatId, messageId, message, retryCount + 1)
+			})
+	}
 }

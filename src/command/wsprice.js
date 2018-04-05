@@ -214,9 +214,9 @@ const updateMessage = () => {
 			bot.telegram.editMessageText(key, group.statusMessageId, null, statusMessage, {
 				parse_mode: "Markdown",
 			})
-				.catch((error) => {
-					console.log(error)
-				})
 		})
+			.catch((error) => {
+				console.log(error)
+			})
 	})
 }

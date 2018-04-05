@@ -14,110 +14,116 @@ let runningSymbols = []
 let prices = {}
 
 
-export default {
-	start: (ctx) => {
-		ctx.getChatMember(ctx.from.id)
-			.then((info) => {
-				// 檢查權限
-				if (info.status == "creator" | info.status == "administrator") {
-					Promise.all([
-						ctx.replyWithMarkdown(`*Price message*\nWaiting update...`),
-						ctx.replyWithMarkdown(`*Status message*\nWaiting update...`),
-						getAllPrice(),
-					])
-						.then((results) => {
-							// 取得 Symbols
-							const commands = ctx.message.text.split(" ")
-							commands.shift()	// 移除第一個，剩下的才是 Symbol
+export default function (ctx) {
+	ctx.getChatMember(ctx.from.id)
+		.then((info) => {
+			// 檢查權限
+			if (info.status == "creator" | info.status == "administrator") {
+				// parse commands
+				const commands = ctx.message.text.split(" ")
+				console.log("commands", commands)
+				commands.shift()	// 移除第一個，剩下的才是 Symbol 或 stop 命令
 
-							// 整理出 symbols
-							let symbols = []
-							_.each(commands, (command) => {
-								if (command == "") {
-									return
-								}
-								let symbol = command.toUpperCase()	// 轉為大寫
-								symbol = symbol.endsWith("USD") ? symbol + "T" : symbol	// 修正 USD -> USDT
-								symbol = symbol.startsWith("IOT") && !symbol.startsWith("IOTA") ? symbol.replace("IOT", "IOTA") : symbol	// IOT -> IOTA
-								if (results[2][symbol]) {
-									symbols.push(symbol)
-									prices[symbol] = {
-										update: moment().format("X"),
-										price: results[2][symbol],
-									}
-								} else {
-									ctx.replyWithMarkdown(`${symbol} not support.`)
-								}
-							})
+				if (commands.length > 0) {
+					// 分別處理 stop 命令或開始更新價格
+					if (commands[0].toUpperCase() == "STOP") {
+						stop(ctx)
+						return
+					} else {
+						return start(ctx, commands)
+					}
+				} else {
+					// 沒有命令或 Symbol
+					ctx.replyWithMarkdown(`請提供交易對，例如：\n\`/wsprice BTCUSDT ETHUSDT BNBUSDT\`\n或是停止價格更新：\n\`/wsprice stop\``)
+				}
+			}
+		})
+		.catch((error) => {
+			console.log(error)
+		})
+}
 
-							// 如果沒有設定交易對，使用 BTCUSDT
-							if (symbols.length == 0) {
-								symbols = ["BTCUSDT"]
-								prices["BTCUSDT"] = {
-									update: moment().format("X"),
-									price: results[2]["BTCUSDT"],
-								}
-							}
-
-							// 設定 group
-							groups[ctx.chat.id] = _.merge(groups[ctx.chat.id], {
-								priceMessageId: results[0].message_id,
-								statusMessageId: results[1].message_id,
-								start: true,
-								symbols,
-							})
-
-							// 設定 Socket
-							manageSocket()
-
-							// Pin 訊息
-							bot.telegram.pinChatMessage(ctx.chat.id, results[0].message_id, { disable_notification: true })
-								.catch((error) => {
-									console.log(error.message)
-								})
-
-							// 先更新一次訊息顯示現在價格
-							updateMessage()
-
-							// 如果沒有 timer 在跑 updateMessage 設定一個
-							if (timer == null) {
-								timer = setInterval(updateMessage, updateTime)
-							}
-						})
+const start = (ctx, commands) => {
+	return Promise.all([
+		ctx.replyWithMarkdown(`* Price message *\nWaiting update...`),
+		ctx.replyWithMarkdown(`* Status message *\nWaiting update...`),
+		getAllPrice(),
+	])
+		.then((results) => {
+			// 整理出 symbols
+			let symbols = []
+			_.each(commands, (command) => {
+				if (command == "") {
+					return
+				}
+				let symbol = command.toUpperCase()	// 轉為大寫
+				symbol = symbol.endsWith("USD") ? symbol + "T" : symbol	// 修正 USD -> USDT
+				symbol = symbol.startsWith("IOT") && !symbol.startsWith("IOTA") ? symbol.replace("IOT", "IOTA") : symbol	// IOT -> IOTA
+				if (results[2][symbol]) {
+					symbols.push(symbol)
+					prices[symbol] = {
+						update: moment().format("X"),
+						price: results[2][symbol],
+					}
+				} else {
+					ctx.replyWithMarkdown(`${symbol} not support.`)
 				}
 			})
-			.catch((error) => {
-				console.log(error)
-			})
-	},
-	stop: (ctx) => {
-		ctx.getChatMember(ctx.from.id)
-			.then((info) => {
-				// 檢查權限
-				if (info.status == "creator" | info.status == "administrator") {
-					// 關閉 group 的 start 狀態
-					groups[ctx.chat.id] = _.merge(groups[ctx.chat.id], {
-						start: false,
-					})
 
-					// 設定 Socket
-					manageSocket()
-
-					// 更新 Pin 訊息
-					bot.telegram.editMessageText(ctx.chat.id, groups[ctx.chat.id].priceMessageId, null, "價格停止更新", {
-						parse_mode: "Markdown",
-					})
-					// 拿掉 Pin 的訊息
-					bot.telegram.unpinChatMessage(ctx.chat.id)
-						.catch((error) => {
-							console.log(error.message)
-						})
+			// 如果沒有設定交易對，使用 BTCUSDT
+			if (symbols.length == 0) {
+				symbols = ["BTCUSDT"]
+				prices["BTCUSDT"] = {
+					update: moment().format("X"),
+					price: results[2]["BTCUSDT"],
 				}
+			}
+
+			// 設定 group
+			groups[ctx.chat.id] = _.merge(groups[ctx.chat.id], {
+				priceMessageId: results[0].message_id,
+				statusMessageId: results[1].message_id,
+				start: true,
+				symbols,
 			})
+
+			// 設定 Socket
+			manageSocket()
+
+			// Pin 訊息
+			bot.telegram.pinChatMessage(ctx.chat.id, results[0].message_id, { disable_notification: true })
+				.catch((error) => {
+					console.log(error.message)
+				})
+
+			// 先更新一次訊息顯示現在價格
+			updateMessage()
+
+			// 如果沒有 timer 在跑 updateMessage 設定一個
+			if (timer == null) {
+				timer = setInterval(updateMessage, updateTime)
+			}
+		})
+}
+
+const stop = (ctx) => {
+	// 如果原本有在跑的話才要處裡
+	if (groups[ctx.chat.id] && groups[ctx.chat.id].start) {
+		// 關閉 group 的 start 狀態
+		groups[ctx.chat.id] = _.merge(groups[ctx.chat.id], {
+			start: false,
+		})
+
+		// 更新 Pin 訊息
+		bot.telegram.editMessageText(ctx.chat.id, groups[ctx.chat.id].priceMessageId, null, "價格停止更新", {
+			parse_mode: "Markdown",
+		})
+		// 拿掉 Pin 的訊息
+		bot.telegram.unpinChatMessage(ctx.chat.id)
 			.catch((error) => {
-				console.log(error)
+				console.log(error.message)
 			})
-	},
+	}
 }
 
 // 回傳 symbol: price object
@@ -161,7 +167,7 @@ const manageSocket = () => {
 		timer = null
 	}
 }
-``
+
 const startSocket = (symbol) => {
 	binance.websockets.chart(symbol, "1m", (symbol, interval, chart) => {
 		let tick = binance.last(chart)
@@ -188,9 +194,14 @@ const updateMessage = () => {
 
 		// 加上每個 Symbol 的訊息
 		_.each(group.symbols, (symbol) => {
+			if (priceMessage != "") {
+				// 處理分隔線和換行
+				priceMessage += ` |\n`
+				statusMessage += `\n`
+			}
 			const displaySymbol = symbol.replace("USDT", "")
-			priceMessage += `${displaySymbol} \`${parseFloat(prices[symbol].price).toFixed(2)}\` |\n`
-			statusMessage += `${displaySymbol}: \`${moment(prices[symbol].update, "X").format("M/D HH:mm:ss")}\`\n`
+			priceMessage += `${displaySymbol} \`${parseFloat(prices[symbol].price).toFixed(2)}\``
+			statusMessage += `${displaySymbol}: \`${moment(prices[symbol].update, "X").format("M/D HH:mm:ss")}\``
 		})
 
 		// 更新價格

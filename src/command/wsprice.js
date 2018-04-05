@@ -1,13 +1,12 @@
 import _ from "lodash"
-import moment from "moment"
+import moment from "moment-timezone"
 import binance from "node-binance-api"
 import config from "../../config"
 import bot from "../bot"
 
+moment.tz("Asia/Taipei")
+const updateTimeSeconds = config.wsPriceUpdateTime ? config.wsPriceUpdateTime : 10
 const updateTime = config.wsPriceUpdateTime * 1000
-binance.options({
-	reconnect: false,
-})
 
 let timer = null
 let groups = {}	// { "group id": {chatId, symbols} }
@@ -87,9 +86,9 @@ export default {
 						})
 				}
 			})
-		// .catch((error) => {
-		// 	console.log(error)
-		// })
+			.catch((error) => {
+				console.log(error)
+			})
 	},
 	stop: (ctx) => {
 		ctx.getChatMember(ctx.from.id)
@@ -115,9 +114,9 @@ export default {
 						})
 				}
 			})
-		// .catch((error) => {
-		// 	console.log(error)
-		// })
+			.catch((error) => {
+				console.log(error)
+			})
 	},
 }
 
@@ -147,14 +146,6 @@ const manageSocket = () => {
 	// 抓出不重複的 symbol array
 	const symbols = _.sortedUniq(allGroupSymbols)
 
-	// 找出要關閉的 symbols
-	const symbolsToStop = _.difference(runningSymbols, symbols)
-	_.each(symbolsToStop, (symbol) => {
-		const endpoint = symbol.toLowerCase() + "@kline_1m"
-		binance.websockets.terminate(endpoint)
-		console.log(`stop ${endpoint}`)
-	})
-
 	// 找出新的 symbols
 	const symbolsToStart = _.difference(symbols, runningSymbols)
 	_.each(symbolsToStart, (symbol) => {
@@ -170,7 +161,7 @@ const manageSocket = () => {
 		timer = null
 	}
 }
-
+``
 const startSocket = (symbol) => {
 	binance.websockets.chart(symbol, "1m", (symbol, interval, chart) => {
 		let tick = binance.last(chart)
@@ -187,6 +178,10 @@ const startSocket = (symbol) => {
 const updateMessage = () => {
 	// 更新每個 group 的訊息
 	_.each(groups, (group, key) => {
+		if (!group.start) {
+			// 沒有 start 的群組就不管了
+			return
+		}
 		// 設定訊息
 		let priceMessage = ``
 		let statusMessage = `Message update at: \`${moment().format("M/D HH:mm:ss")}\`\n`
@@ -201,12 +196,14 @@ const updateMessage = () => {
 		// 更新價格
 		bot.telegram.editMessageText(key, group.priceMessageId, null, priceMessage, {
 			parse_mode: "Markdown",
-		})
-
-		// 更新狀態
-		bot.telegram.editMessageText(key, group.statusMessageId, null, statusMessage, {
-			parse_mode: "Markdown",
+		}).then(() => {
+			// 更新狀態
+			bot.telegram.editMessageText(key, group.statusMessageId, null, statusMessage, {
+				parse_mode: "Markdown",
+			})
+				.catch((error) => {
+					console.log(error)
+				})
 		})
 	})
 }
-

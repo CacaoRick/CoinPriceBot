@@ -21,7 +21,6 @@ export default function (ctx) {
 			if (info.status == "creator" | info.status == "administrator") {
 				// parse commands
 				const commands = ctx.message.text.split(" ")
-				console.log("commands", commands)
 				commands.shift()	// 移除第一個，剩下的才是 Symbol 或 stop 命令
 
 				if (commands.length > 0) {

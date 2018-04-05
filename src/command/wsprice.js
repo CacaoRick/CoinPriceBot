@@ -200,7 +200,9 @@ const updateMessage = () => {
 				statusMessage += `\n`
 			}
 			const displaySymbol = symbol.replace("USDT", "")
-			priceMessage += `${displaySymbol} \`${parseFloat(prices[symbol].price).toFixed(2)}\``
+			const price = parseFloat(prices[symbol].price)
+			const factoryDigital = price > 1000 ? 1 : 2
+			priceMessage += `${displaySymbol} \`${price.toFixed(factoryDigital)}\``
 			statusMessage += `${displaySymbol}: \`${moment(prices[symbol].update, "X").format("M/D HH:mm:ss")}\``
 		})
 

@@ -104,6 +104,9 @@ const start = (ctx, commands) => {
 				timer = setInterval(updateMessage, updateTime)
 			}
 		})
+		.catch((error) => {
+			console.log(error)
+		})
 }
 
 const stop = (ctx) => {

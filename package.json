@@ -18,7 +18,7 @@
     "moment-timezone": "^0.5.14",
     "node-binance-api": "^0.4.26",
     "quiche": "^0.3.0",
-    "telegraf": "^3.11.1"
+    "telegraf": "^3.20.0"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",

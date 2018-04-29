@@ -1804,7 +1804,7 @@ tar@^2.2.1:
     fstream "^1.0.2"
     inherits "2"
 
-telegraf@^3.11.1:
+telegraf@^3.20.0:
   version "3.20.0"
   resolved "https://registry.yarnpkg.com/telegraf/-/telegraf-3.20.0.tgz#b45f35209e505e6dd1cbeff94c5d85f02db52f5d"
   dependencies:

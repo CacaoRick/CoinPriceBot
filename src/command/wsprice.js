@@ -123,11 +123,9 @@ const stop = (ctx) => {
 		bot.telegram.editMessageText(ctx.chat.id, groups[ctx.chat.id].priceMessageId, null, "價格停止更新", {
 			parse_mode: "Markdown",
 		})
-		// 拿掉 Pin 的訊息
-		bot.telegram.unpinChatMessage(ctx.chat.id)
-			.catch((error) => {
-				console.error(error.message)
-			})
+
+		// 設定 Socket
+		manageSocket()
 	}
 }
 
@@ -164,6 +162,12 @@ const manageSocket = () => {
 		console.log(`start ${symbol}`)
 	})
 
+	const symbolsToStop = _.difference(runningSymbols, symbols)
+	_.each(symbolsToStop, (symbol) => {
+		stopSocket(symbol)
+		console.log(`stop ${symbol}`)
+	})
+
 	// 把現在的 symbols 設為 running
 	runningSymbols = symbols
 	if (runningSymbols.length === 0) {
@@ -184,6 +188,10 @@ const startSocket = (symbol) => {
 			price: last,
 		}
 	})
+}
+
+const stopSocket = (symbol) => {
+	binance.websockets.terminate(`${symbol.toLowerCase()}@kline_1m`)
 }
 
 const updateMessage = () => {

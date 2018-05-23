@@ -6,6 +6,7 @@ import bot from "../bot"
 import db from "../db"
 
 const updateTime = config.wsPriceUpdateTime * 1000
+const nowDuration = moment.duration(config.wsPriceErrorTime, "seconds")
 
 let timer = null
 let groups = {}	// { "group id": {chatId, symbols} }
@@ -195,18 +196,29 @@ const stopSocket = (symbol) => {
 }
 
 const updateMessage = () => {
+	let stopFlag = false
 	// 更新每個 group 的訊息
 	_.each(groups, (group, key) => {
 		if (!group.start) {
 			// 沒有 start 的群組就不管了
 			return
 		}
+
+		// 現在時間
+		const now = moment().subtract(nowDuration)
+
 		// 設定訊息
 		let priceMessage = ``
 		let statusMessage = `Message update at: \`${moment().tz("Asia/Taipei").format("M/D HH:mm:ss")}\`\n`
 
 		// 加上每個 Symbol 的訊息
 		_.each(group.symbols, (symbol) => {
+			if (moment(prices[symbol].update, "X").isBefore(now)) {
+				stopFlag = true
+				errorStopAll()
+				return false
+			}
+
 			if (priceMessage !== "") {
 				// 處理分隔線和換行
 				priceMessage += ` |\n`
@@ -218,6 +230,11 @@ const updateMessage = () => {
 			priceMessage += `${displaySymbol} \`${price.toFixed(factoryDigital)}\``
 			statusMessage += `${displaySymbol}: \`${moment(prices[symbol].update, "X").tz("Asia/Taipei").format("M/D HH:mm:ss")}\``
 		})
+
+		// 如果裡面已經呼叫 errorStopAll，其他 groups 就不用繼續做了
+		if (stopFlag) {
+			return false
+		}
 
 		// 更新價格
 		editMessageWithRetry(key, group.priceMessageId, priceMessage, 0)
@@ -235,4 +252,33 @@ function editMessageWithRetry(chatId, messageId, message, retryCount) {
 				editMessageWithRetry(chatId, messageId, message, retryCount + 1)
 			})
 	}
+}
+
+// 停止所有 websocket
+function errorStopAll() {
+	// 更改置頂訊息
+	_.each(groups, (group, key) => {
+		if (group.start) {
+			// 更新 Pin 訊息
+			bot.telegram.editMessageText(key, group.priceMessageId, null, "幣安 API 異常，價格停止更新", {
+				parse_mode: "Markdown",
+			})
+		}
+	})
+
+	// 停止 websocket
+	// 抓出每個 group 使用的 symbols
+	let allGroupSymbols = []
+	_.each(groups, (group) => {
+		if (group.start) {
+			allGroupSymbols = allGroupSymbols.concat(group.symbols)
+		}
+	})
+
+	// 抓出不重複的 symbol array
+	const symbols = _.sortedUniq(allGroupSymbols)
+	_.each(symbols, (symbol) => {
+		stopSocket(symbol)
+		console.log(`stop ${symbol}`)
+	})
 }

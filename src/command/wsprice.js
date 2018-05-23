@@ -4,14 +4,12 @@ import binance from "node-binance-api"
 import config from "../../config"
 import bot from "../bot"
 
-const updateTimeSeconds = config.wsPriceUpdateTime ? config.wsPriceUpdateTime : 10
 const updateTime = config.wsPriceUpdateTime * 1000
 
 let timer = null
 let groups = {}	// { "group id": {chatId, symbols} }
 let runningSymbols = []
 let prices = {}
-
 
 export default function (ctx) {
 	ctx.getChatMember(ctx.from.id)

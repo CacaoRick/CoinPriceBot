@@ -20,7 +20,7 @@ export default function (ctx) {
 			if (currency === "BTC") {
 				const bitoex = api.bitoex()
 					.then((message) => {
-						if (message != "") {
+						if (message !== "") {
 							twdResultMessages += message
 							return ctx.telegram.editMessageText(ctx.chat.id, result.message_id, null, twdResultMessages + resultMessages, {
 								parse_mode: "Markdown",

@@ -5,7 +5,7 @@
 import cloudscraper from "cloudscraper"
 
 export default function (plain) {
-	return new Promise((resolve, reject) => {
+	return new Promise((resolve) => {
 		cloudscraper.get("https://www.bitoex.com/api/v1/get_rate", (error, response, body) => {
 			if (error) {
 				console.log("Error in BitoEx", error)

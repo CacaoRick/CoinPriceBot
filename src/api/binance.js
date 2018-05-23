@@ -5,7 +5,7 @@ import axios from "axios"
 // result array of {symbol: "ETHBTC", price: "0.04811600"}, {symbol: "LTCBTC", price: "0.01920700"} ...
 
 export default function (currency, base, plain) {
-	return new Promise((resolve, reject) => {
+	return new Promise((resolve) => {
 		base = base === "USD" ? "USDT" : base
 		return axios.get("https://api.binance.com/api/v1/ticker/allPrices")
 			.then((res) => {

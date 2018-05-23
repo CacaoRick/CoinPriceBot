@@ -21,7 +21,7 @@ import axios from "axios"
 const symbols = { BTC: "btc-twd", ETH: "eth-twd", LTC: "ltc-twd" }
 
 export default function (currency, plain) {
-	return new Promise((resolve, reject) => {
+	return new Promise((resolve) => {
 		return axios.get(`https://www.maicoin.com/api/prices/${symbols[currency]}`)
 			.then((res) => {
 				const { data } = res

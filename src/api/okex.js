@@ -23,7 +23,7 @@
 import axios from "axios"
 
 export default function (currency, base) {
-	return new Promise((resolve, reject) => {
+	return new Promise((resolve) => {
 		// 讓 currency 能接受 IOT
 		currency = currency === "iot" || currency === "IOT" ? "IOTA" : currency
 		base = base === "USD" ? "USDT" : base

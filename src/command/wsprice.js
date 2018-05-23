@@ -195,7 +195,7 @@ const updateMessage = () => {
 
 		// 加上每個 Symbol 的訊息
 		_.each(group.symbols, (symbol) => {
-			if (priceMessage != "") {
+			if (priceMessage !== "") {
 				// 處理分隔線和換行
 				priceMessage += ` |\n`
 				statusMessage += `\n`

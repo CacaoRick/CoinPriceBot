@@ -2,7 +2,7 @@ import api from "../api"
 
 export default function (ctx) {
 	const command = ctx.message.text.split(" ")
-	if (command.length != 3) {
+	if (command.length !== 3) {
 		ctx.replyWithMarkdown(`參數怪怪der，範例：\n\`${command[0]} 50.3 mco\``)
 		return
 	}
@@ -32,7 +32,7 @@ export default function (ctx) {
 	console.log(`/${action} ${amount} ${currency}`)
 
 	let messageResult = ""
-	if (currency != "BTC") {
+	if (currency !== "BTC") {
 		// 先換成 BTC
 		const promises = []
 		promises.push(api.binance(currency, "BTC", true))
@@ -73,7 +73,10 @@ export default function (ctx) {
 			})
 			.catch((error) => {
 				console.log(`Error in /${action}`, ctx.message.text, error)
-				return ctx.telegram.editMessageText(ctx.chat.id, result.message_id, null, `好像錯誤了`)
+				return ctx.reply(`好像錯誤了`, {
+					reply_to_message_id: ctx.message.message_id,
+					parse_mode: "Markdown",
+				})
 			})
 	} else {
 		return ctx.reply("loading...", {
@@ -93,7 +96,7 @@ export default function (ctx) {
 }
 
 function getTwdPrice(action, btcPrice) {
-	return new Promise((resolve, reject) => {
+	return new Promise((resolve) => {
 		const promises = []
 		promises.push(api.bitoex(true))
 		promises.push(api.maicoin("BTC", true))
@@ -142,7 +145,7 @@ function getTwdPrice(action, btcPrice) {
 				}
 			})
 			.catch((error) => {
-				console.log(`Error in /${action} getTwdPrice`)
+				console.log(`Error in /${action} getTwdPrice`, error)
 				resolve("API 異常，無法換算 TWD")
 			})
 	})

@@ -14,8 +14,8 @@ let prices = {}
 export default function (ctx) {
 	ctx.getChatMember(ctx.from.id)
 		.then((info) => {
-			// 檢查權限
-			if (info.status == "creator" | info.status == "administrator") {
+			// 檢查權限，如果是我、群主或管理員才可以用
+			if (info === config.admin || info.status === "creator" || info.status === "administrator") {
 				// parse commands
 				const commands = ctx.message.text.split(" ")
 				commands.shift()	// 移除第一個，剩下的才是 Symbol 或 stop 命令

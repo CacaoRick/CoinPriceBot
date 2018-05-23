@@ -22,7 +22,7 @@ export default function (ctx) {
 
 				if (commands.length > 0) {
 					// 分別處理 stop 命令或開始更新價格
-					if (commands[0].toUpperCase() == "STOP") {
+					if (commands[0].toUpperCase() === "STOP") {
 						stop(ctx)
 						return
 					} else {
@@ -49,7 +49,7 @@ const start = (ctx, commands) => {
 			// 整理出 symbols
 			let symbols = []
 			_.each(commands, (command) => {
-				if (command == "") {
+				if (command === "") {
 					return
 				}
 				let symbol = command.toUpperCase()	// 轉為大寫
@@ -67,7 +67,7 @@ const start = (ctx, commands) => {
 			})
 
 			// 如果沒有設定交易對，使用 BTCUSDT
-			if (symbols.length == 0) {
+			if (symbols.length === 0) {
 				symbols = ["BTCUSDT"]
 				prices["BTCUSDT"] = {
 					update: moment().format("X"),
@@ -162,7 +162,7 @@ const manageSocket = () => {
 
 	// 把現在的 symbols 設為 running
 	runningSymbols = symbols
-	if (runningSymbols.length == 0) {
+	if (runningSymbols.length === 0) {
 		// 停止 timer
 		clearInterval(timer)
 		timer = null

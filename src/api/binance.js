@@ -6,7 +6,7 @@ import axios from "axios"
 
 export default function (currency, base, plain) {
 	return new Promise((resolve, reject) => {
-		base = base == "USD" ? "USDT" : base
+		base = base === "USD" ? "USDT" : base
 		return axios.get("https://api.binance.com/api/v1/ticker/allPrices")
 			.then((res) => {
 				const allPrices = res.data
@@ -19,7 +19,7 @@ export default function (currency, base, plain) {
 					}
 				})
 
-				if (currencyPrices.length == 0) {
+				if (currencyPrices.length === 0) {
 					// 找不到目標幣種
 					if (plain) {
 						resolve(null)
@@ -35,7 +35,7 @@ export default function (currency, base, plain) {
 				_.each(currencyPrices, (data) => {
 					if (data.symbol.endsWith(base)) {
 						price = data.price
-						if (base == "USDT") {
+						if (base === "USDT") {
 							price = Number(price).toFixed(2)
 						}
 						message = `*Binance* \`${price}\` ${base}\n`

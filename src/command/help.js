@@ -17,7 +17,7 @@ const helpMessage = `/price \`[幣種] [幣種]\`
 \`/avg 1.2 eth\``
 
 export default function (ctx) {
-	if (ctx.chat.type == "group" || ctx.chat.type == "supergroup") {
+	if (ctx.chat.type === "group" || ctx.chat.type === "supergroup") {
 		// 群組
 		ctx.replyWithMarkdown(helpMessage, {
 			reply_to_message_id: ctx.message.message_id,

@@ -24,21 +24,21 @@ import axios from "axios"
 export default function (currency, base, plain) {
 	return new Promise((resolve, reject) => {
 		// 讓 currency 能接受 IOTA
-		currency = currency == "iota" || currency == "IOTA" ? "IOT" : currency
-		base = base == "USDT" ? "USD" : base
+		currency = currency === "iota" || currency === "IOTA" ? "IOT" : currency
+		base = base === "USDT" ? "USD" : base
 		return axios.get(`https://api.bitfinex.com/v1/pubticker/${currency}${base}`)
 			.then((res) => {
 				const { data } = res
-				let price = base == "USD" ? Number(data.last_price).toFixed(2) : data.last_price
+				let price = base === "USD" ? Number(data.last_price).toFixed(2) : data.last_price
 				if (plain) {
 					resolve(price)
 				} else {
 					// 如果 base 是 USD 跟其他交易所一起統一顯示為 USDT
-					resolve(`*Bitfinex* \`${price}\` ${base == "USD" ? "USDT" : base}\n`)
+					resolve(`*Bitfinex* \`${price}\` ${base === "USD" ? "USDT" : base}\n`)
 				}
 			})
 			.catch((error) => {
-				if (error.response && error.response.data && error.response.data.message == "Unknown symbol") {
+				if (error.response && error.response.data && error.response.data.message === "Unknown symbol") {
 					// 找不到該幣種
 					if (plain) {
 						resolve(null)

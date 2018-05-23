@@ -9,12 +9,12 @@ import axios from "axios"
 
 export default function (currency, base) {
 	return new Promise((resolve, reject) => {
-		base = base == "USD" ? "USDT" : base
+		base = base === "USD" ? "USDT" : base
 		return axios.get(`https://bittrex.com/api/v1.1/public/getticker?market=${base}-${currency}`)
 			.then((res) => {
 				const { result } = res.data
 				if (result) {
-					let price = base == "USDT" ? Number(result.Last).toFixed(2) : result.Last
+					let price = base === "USDT" ? Number(result.Last).toFixed(2) : result.Last
 					resolve(`*Bittrex* \`${price}\` ${base}\n`)
 				} else {
 					// 無結果

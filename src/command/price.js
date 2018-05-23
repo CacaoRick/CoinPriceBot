@@ -17,7 +17,7 @@ export default function (ctx) {
 			let resultMessages = ""
 
 			// 多找 BitoEx
-			if (currency == "BTC") {
+			if (currency === "BTC") {
 				const bitoex = api.bitoex()
 					.then((message) => {
 						if (message != "") {
@@ -31,10 +31,10 @@ export default function (ctx) {
 			}
 
 			// 多找 MaiCoin
-			if (currency == "BTC" || currency == "ETH" || currency == "LTC") {
+			if (currency === "BTC" || currency === "ETH" || currency === "LTC") {
 				const maicoin = api.maicoin(currency)
 					.then((message) => {
-						if (message != "") {
+						if (message !== "") {
 							twdResultMessages += message
 							return ctx.telegram.editMessageText(ctx.chat.id, result.message_id, null, twdResultMessages + resultMessages, {
 								parse_mode: "Markdown",
@@ -46,7 +46,7 @@ export default function (ctx) {
 
 			const binance = api.binance(currency, base)
 				.then((message) => {
-					if (message != "") {
+					if (message !== "") {
 						resultMessages += message
 						return ctx.telegram.editMessageText(ctx.chat.id, result.message_id, null, twdResultMessages + resultMessages, {
 							parse_mode: "Markdown",
@@ -57,7 +57,7 @@ export default function (ctx) {
 
 			const bitfinex = api.bitfinex(currency, base)
 				.then((message) => {
-					if (message != "") {
+					if (message !== "") {
 						resultMessages += message
 						return ctx.telegram.editMessageText(ctx.chat.id, result.message_id, null, twdResultMessages + resultMessages, {
 							parse_mode: "Markdown",
@@ -68,7 +68,7 @@ export default function (ctx) {
 
 			const bittrex = api.bittrex(currency, base)
 				.then((message) => {
-					if (message != "") {
+					if (message !== "") {
 						resultMessages += message
 						return ctx.telegram.editMessageText(ctx.chat.id, result.message_id, null, twdResultMessages + resultMessages, {
 							parse_mode: "Markdown",
@@ -79,7 +79,7 @@ export default function (ctx) {
 
 			const okex = api.okex(currency, base)
 				.then((message) => {
-					if (message != "") {
+					if (message !== "") {
 						resultMessages += message
 						return ctx.telegram.editMessageText(ctx.chat.id, result.message_id, null, twdResultMessages + resultMessages, {
 							parse_mode: "Markdown",
@@ -90,7 +90,7 @@ export default function (ctx) {
 
 			Promise.all(promises)
 				.then(() => {
-					if (twdResultMessages == "" && resultMessages == "") {
+					if (twdResultMessages === "" && resultMessages === "") {
 						return ctx.telegram.editMessageText(ctx.chat.id, result.message_id, null, `${currency}${base ? "-" + base : ""} 查無結果`)
 					}
 				})

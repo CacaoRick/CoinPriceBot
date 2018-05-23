@@ -103,7 +103,7 @@ function getTwdPrice(action, btcPrice) {
 				let maicoinPrice = Number(results[1][action]) > 0 ? Number(results[1][action]) : null
 				let twdPrice = null
 				let platform = null
-				if (action == "avg") {
+				if (action === "avg") {
 					let result = ""
 					if (bitoexPrice) {
 						result = result + `\`${bitoexPrice.toFixed(0)}\` TWD (BitoEx)\n`
@@ -112,17 +112,17 @@ function getTwdPrice(action, btcPrice) {
 						result = result + `\`${maicoinPrice.toFixed(0)}\` TWD (MaiCoin)\n`
 					}
 
-					if (result != "") {
+					if (result !== "") {
 						resolve(result)
 					} else {
 						// 沒有結果
 						resolve("API 異常，無法換算 TWD")
 					}
 				} else {
-					if (action == "buy" && bitoexPrice && maicoinPrice) {
+					if (action === "buy" && bitoexPrice && maicoinPrice) {
 						twdPrice = bitoexPrice <= maicoinPrice ? btcPrice * bitoexPrice : btcPrice * maicoinPrice
 						platform = bitoexPrice <= maicoinPrice ? "BitoEx" : "MaiCoin"
-					} else if (action == "sell" && bitoexPrice && maicoinPrice) {
+					} else if (action === "sell" && bitoexPrice && maicoinPrice) {
 						twdPrice = bitoexPrice >= maicoinPrice ? btcPrice * bitoexPrice : btcPrice * maicoinPrice
 						platform = bitoexPrice >= maicoinPrice ? "BitoEx" : "MaiCoin"
 					} else if (bitoexPrice) {

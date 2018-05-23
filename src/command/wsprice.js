@@ -14,9 +14,6 @@ let runningSymbols = []
 let prices = {}
 
 export default function (ctx) {
-	console.log(ctx.message)
-	console.log(ctx.chat)
-	console.log(ctx.from)
 	ctx.getChatMember(ctx.from.id)
 		.then((info) => {
 			// 檢查權限，如果是我、群主或管理員才可以用

@@ -1,6 +1,9 @@
 import api from "../api"
+import log from "../utils/log"
 
 export default function (ctx) {
+	log(ctx)
+
 	const command = ctx.message.text.split(" ")
 	const currency = command[1] ? command[1].toUpperCase() : "BTC"
 	const base = command[2] ? command[2].toUpperCase() : "USD"

@@ -1,6 +1,9 @@
 import { blockexplorer } from "blockchain.info"
+import log from "../utils/log"
 
 export default function (ctx) {
+	log(ctx)
+
 	ctx.reply("Loading...", {
 		reply_to_message_id: ctx.message.message_id,
 	})

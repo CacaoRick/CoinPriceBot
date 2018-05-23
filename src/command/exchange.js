@@ -1,6 +1,9 @@
 import api from "../api"
+import log from "../utils/log"
 
 export default function (ctx) {
+	log(ctx)
+
 	const command = ctx.message.text.split(" ")
 	if (command.length !== 3) {
 		ctx.replyWithMarkdown(`參數怪怪der，範例：\n\`${command[0]} 50.3 mco\``)

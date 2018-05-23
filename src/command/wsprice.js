@@ -3,6 +3,7 @@ import moment from "moment-timezone"
 import binance from "node-binance-api"
 import config from "../../config"
 import bot from "../bot"
+import db from "../db"
 
 const updateTime = config.wsPriceUpdateTime * 1000
 
@@ -12,6 +13,9 @@ let runningSymbols = []
 let prices = {}
 
 export default function (ctx) {
+	console.log(ctx.message)
+	console.log(ctx.chat)
+	console.log(ctx.from)
 	ctx.getChatMember(ctx.from.id)
 		.then((info) => {
 			// 檢查權限，如果是我、群主或管理員才可以用

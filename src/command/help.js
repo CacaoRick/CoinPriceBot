@@ -1,3 +1,5 @@
+import log from "../utils/log"
+
 const helpMessage = `/price \`[幣種] [幣種]\`
 察看目前的價格，預設以 USD 查詢，例如：
 \`/price eth\`
@@ -17,6 +19,8 @@ const helpMessage = `/price \`[幣種] [幣種]\`
 \`/avg 1.2 eth\``
 
 export default function (ctx) {
+	log(ctx)
+
 	if (ctx.chat.type === "group" || ctx.chat.type === "supergroup") {
 		// 群組
 		ctx.replyWithMarkdown(helpMessage, {

@@ -59,3 +59,4 @@ jspm_packages
 config.js
 pools.json
 build
+db.json

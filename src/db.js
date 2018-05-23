@@ -9,5 +9,6 @@ db.defaults({
 	groups: {},
 	wsGroups: {},
 })
+	.write()
 
 export default db

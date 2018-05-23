@@ -22,7 +22,7 @@ export default function (currency, base) {
 				}
 			})
 			.catch((error) => {
-				console.log("Error in Bittrex", error)
+				console.error("Error in Bittrex", error)
 				resolve(`*Bittrex* ❌\n`)
 			})
 	})

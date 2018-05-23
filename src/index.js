@@ -3,7 +3,7 @@ import command from "./command"
 import bot from "./bot"
 
 bot.catch((error) => {
-	console.log("Global error catch", error)
+	console.error("Global error catch", error)
 })
 
 bot.command("/help", command.help)

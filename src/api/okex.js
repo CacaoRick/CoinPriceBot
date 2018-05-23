@@ -38,7 +38,7 @@ export default function (currency, base) {
 				}
 			})
 			.catch((error) => {
-				console.log("Error in OkEx", error)
+				console.error("Error in OkEx", error)
 				resolve(`*OkEx* ❌\n`)
 			})
 	})

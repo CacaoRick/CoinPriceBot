@@ -48,7 +48,7 @@ export default function (currency, base, plain) {
 				}
 			})
 			.catch((error) => {
-				console.log("Error in Binance", error)
+				console.error("Error in Binance", error)
 				if (plain) {
 					resolve(null)
 				} else {

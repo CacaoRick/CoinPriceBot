@@ -46,7 +46,7 @@ export default function (currency, base, plain) {
 						resolve("")
 					}
 				} else {
-					console.log("Error in Bitfinex", error)
+					console.error("Error in Bitfinex", error)
 					if (plain) {
 						resolve(null)
 					} else {

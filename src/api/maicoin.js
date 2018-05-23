@@ -39,7 +39,7 @@ export default function (currency, plain) {
 				}
 			})
 			.catch((error) => {
-				console.log("Error in MaiCoin", error)
+				console.error("Error in MaiCoin", error)
 				if (plain) {
 					resolve(null)
 				} else {

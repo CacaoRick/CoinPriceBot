@@ -145,7 +145,7 @@ function getTwdPrice(action, btcPrice) {
 				}
 			})
 			.catch((error) => {
-				console.log(`Error in /${action} getTwdPrice`, error)
+				console.error(`Error in /${action} getTwdPrice`, error)
 				resolve("API 異常，無法換算 TWD")
 			})
 	})

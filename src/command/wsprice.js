@@ -35,7 +35,7 @@ export default function (ctx) {
 			}
 		})
 		.catch((error) => {
-			console.log(error)
+			console.error(error)
 		})
 }
 
@@ -103,7 +103,7 @@ const start = (ctx, commands) => {
 			}
 		})
 		.catch((error) => {
-			console.log(error)
+			console.error(error)
 		})
 }
 
@@ -122,7 +122,7 @@ const stop = (ctx) => {
 		// 拿掉 Pin 的訊息
 		bot.telegram.unpinChatMessage(ctx.chat.id)
 			.catch((error) => {
-				console.log(error.message)
+				console.error(error.message)
 			})
 	}
 }
@@ -219,7 +219,7 @@ function editMessageWithRetry(chatId, messageId, message, retryCount) {
 	if (retryCount < 2) {
 		bot.telegram.editMessageText(chatId, messageId, null, message, { parse_mode: "Markdown" })
 			.catch((error) => {
-				console.log(`Edit message error, retry: ${retryCount + 1}`, error.description)
+				console.error(`Edit message error, retry: ${retryCount + 1}`, error.description)
 				editMessageWithRetry(chatId, messageId, message, retryCount + 1)
 			})
 	}

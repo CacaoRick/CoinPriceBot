@@ -96,6 +96,6 @@ export default function (ctx) {
 				})
 		})
 		.catch((error) => {
-			console.log("Error in /price", ctx.message.text, error)
+			console.error("Error in /price", ctx.message.text, error)
 		})
 }

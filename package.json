@@ -10,15 +10,15 @@
     "node": "babel-node --"
   },
   "dependencies": {
-    "axios": "^0.16.2",
-    "blockchain.info": "^2.11.0",
-    "cloudscraper": "^1.4.1",
-    "lodash": "^4.17.4",
-    "moment": "^2.18.1",
-    "moment-timezone": "^0.5.14",
-    "node-binance-api": "^0.4.26",
+    "axios": "^0.18.0",
+    "blockchain.info": "^2.12.1",
+    "cloudscraper": "^1.5.0",
+    "lodash": "^4.17.10",
+    "moment": "^2.22.1",
+    "moment-timezone": "^0.5.17",
+    "node-binance-api": "^0.6.0",
     "quiche": "^0.3.0",
-    "telegraf": "^3.20.0"
+    "telegraf": "^3.21.1"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",

@@ -8,4 +8,5 @@ export default function log(ctx) {
 		const groups = db.get("groups")
 		groups[ctx.chat.id] = groups[ctx.chat.id] + 1
 	}
+	db.write()
 }

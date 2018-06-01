@@ -3,7 +3,6 @@ import moment from "moment-timezone"
 import binance from "node-binance-api"
 import config from "../../config"
 import bot from "../bot"
-import db from "../db"
 
 const updateTime = config.wsPriceUpdateTime * 1000
 const nowDuration = moment.duration(config.wsPriceErrorTime, "seconds")

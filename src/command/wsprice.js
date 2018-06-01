@@ -236,14 +236,11 @@ const updateMessage = () => {
 	if (retryTime && moment().isBefore(retryTime)) {
 		// 跳過，不做更新
 		return
-	} else {
+	} else if (retryTime != null && _.keys(sockets).length === 0) {
+		// retryTime 時間結束，如果沒有東西在跑，重新設定 socket
+		manageSocket()
 		// 移除 retryTime
 		retryTime = null
-
-		if (_.keys(sockets).length === 0) {
-			// 如果沒有東西在跑，重新啟動 socket
-			manageSocket()
-		}
 	}
 
 	// 現在時間

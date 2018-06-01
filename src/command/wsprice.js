@@ -301,7 +301,7 @@ const updateMessage = () => {
 		// 更新價格
 		editMessageWithRetry(groupId, group.priceMessageId, priceMessage, 0)
 		// 更新狀態
-		editMessageWithRetry(groupId, group.priceMessageId, statusMessage, 0)
+		editMessageWithRetry(groupId, group.statusMessageId, statusMessage, 0)
 	})
 }
 

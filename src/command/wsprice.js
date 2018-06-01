@@ -299,27 +299,9 @@ const updateMessage = () => {
 			statusMessage += `${displaySymbol} \`${moment(data.update, "X").tz("Asia/Taipei").format("M/D HH:mm:ss")}\``
 		})
 		// 更新價格
-		bot.telegram.editMessageText(
-			groupId,
-			group.priceMessageId,
-			null,
-			priceMessage,
-			{ parse_mode: "Markdown" }
-		)
-			.catch((error) => {
-				console.error("Edit priceMessage error", error.description)
-			})
+		editMessageWithRetry(groupId, group.priceMessageId, priceMessage, 0)
 		// 更新狀態
-		bot.telegram.editMessageText(
-			groupId,
-			group.statusMessageId,
-			null,
-			statusMessage,
-			{ parse_mode: "Markdown" }
-		)
-			.catch((error) => {
-				console.error("Edit statusMessage error", error.description)
-			})
+		editMessageWithRetry(groupId, group.priceMessageId, statusMessage, 0)
 	})
 }
 
@@ -358,6 +340,17 @@ const errorStopSocket = () => {
 	})
 	// 重建 binance api
 	binance = Binance()
+}
+
+// editMessage 會重試 2 次
+function editMessageWithRetry(chatId, messageId, message, retryCount) {
+	if (retryCount < 2) {
+		bot.telegram.editMessageText(chatId, messageId, null, message, { parse_mode: "Markdown" })
+			.catch((error) => {
+				console.error(`Edit message error, retry: ${retryCount + 1}`, error.description)
+				editMessageWithRetry(chatId, messageId, message, retryCount + 1)
+			})
+	}
 }
 
 // 從 db 讀出之前的設定

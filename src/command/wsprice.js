@@ -59,7 +59,6 @@ let sockets = {}
 export default function (ctx) {
 	ctx.getChatMember(ctx.from.id)
 		.then((info) => {
-			console.log(info)
 			// 檢查權限，如果是我、群主或管理員才可以用
 			if (
 				info === config.admin ||

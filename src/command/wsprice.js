@@ -199,8 +199,8 @@ const manageSocket = () => {
 		stopWebSocket(symbol)
 	})
 
-	// 如果沒有 timer 在跑 updateMessage 設定一個
-	if (timer == null) {
+	// 如果沒有 updateMessage timer 在跑，且 socket 有在動， 設定一個
+	if (timer == null && _.keys(sockets).length !== 0) {
 		timer = setInterval(updateMessage, updateTime)
 	}
 }

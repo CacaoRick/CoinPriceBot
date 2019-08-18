@@ -11,6 +11,12 @@
           "./src"
         ],
       }
+    ],
+    [
+      "transform-runtime",
+      {
+        "regenerator": true
+      }
     ]
   ]
 }

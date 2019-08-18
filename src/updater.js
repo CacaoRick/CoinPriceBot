@@ -17,7 +17,6 @@ export async function start () {
 
 async function update () {
   if (!db.main.value() || db.main.isEmpty().value()) {
-    console.log('no need update')
     return
   }
 
@@ -37,12 +36,12 @@ async function update () {
       } else {
         // fUSD 利率
         const rate = result[10]
-        rateMessage = `fUSD \`${(100 * rate).toFixed(6)}\``
+        rateMessage = `% \`${(100 * rate).toFixed(4)}\``
       }
     })
 
     // 加入 rate
-    priceMessages.push(rateMessage)
+    priceMessages.unshift(rateMessage)
 
     // 更新訊息
     _.forEach(db.main.value(), async (group) => {
@@ -62,7 +61,7 @@ async function update () {
         })
     })
   } catch (error) {
-    console.log(error)
+    console.log('update', error)
   }
 }
 

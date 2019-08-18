@@ -75,13 +75,11 @@ bot.onText(/\/price/, async (msg) => {
 
 bot.onText(/\/pin/, async (msg) => {
   if (msg.chat.type !== 'group' && msg.chat.type !== 'supergroup') {
-    console.log('not group')
     return
   }
 
   const memberInfo = await bot.getChatMember(msg.chat.id, msg.from.id)
   if (memberInfo.status !== 'creator' && memberInfo.status !== 'administrator') {
-    console.log('not admin')
     return
   }
 
@@ -108,13 +106,11 @@ bot.onText(/\/pin/, async (msg) => {
 
 bot.onText(/\/stop/, async (msg) => {
   if (msg.chat.type !== 'group' && msg.chat.type !== 'supergroup') {
-    console.log('not group')
     return
   }
 
   const memberInfo = await bot.getChatMember(msg.chat.id, msg.from.id)
   if (memberInfo.status !== 'creator' && memberInfo.status !== 'administrator') {
-    console.log('not admin')
     return
   }
 

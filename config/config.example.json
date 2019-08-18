@@ -1,5 +1,4 @@
 {
-  "adminChatId": 30100072,
   "botToken": "telegram_bot_token",
   "coinmarketcapApiKey": "coinmarket_cap_api_key"
 }

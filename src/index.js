@@ -88,6 +88,12 @@ bot.onText(/\/pin/, async (msg) => {
   const priceMessageResponse = await bot.sendMessage(msg.chat.id, 'Loading...')
   const statusMessageResponse = await bot.sendMessage(msg.chat.id, 'Loading...')
 
+  try {
+    await bot.pinChatMessage(msg.chat.id, priceMessageResponse.message_id, { disable_notification: true })
+  } catch (error) {
+    console.log('pinChatMessage error', error.message)
+  }
+
   db.main.set(msg.chat.id, {
     priceMessage: {
       chat_id: msg.chat.id,

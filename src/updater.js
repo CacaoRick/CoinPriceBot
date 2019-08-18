@@ -40,12 +40,9 @@ async function update () {
       }
     })
 
-    // 加入 rate
-    priceMessages.unshift(rateMessage)
-
     // 更新訊息
     _.forEach(db.main.value(), async (group) => {
-      const newMessage = priceMessages.join(' |\n')
+      const newMessage = [rateMessage, ...priceMessages].join(' |\n')
       if (lastMessage !== newMessage) {
         lastMessage = newMessage
         await bot.editMessageText(newMessage, {

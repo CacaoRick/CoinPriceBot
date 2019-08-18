@@ -4,18 +4,13 @@
   ],
   "plugins": [
     "@babel/plugin-proposal-class-properties",
+    "@babel/plugin-transform-runtime",
     [
       "module-resolver",
       {
         "root": [
           "./src"
         ],
-      }
-    ],
-    [
-      "transform-runtime",
-      {
-        "regenerator": true
       }
     ]
   ]

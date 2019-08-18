@@ -105,3 +105,27 @@ bot.onText(/\/pin/, async (msg) => {
     },
   }).write()
 })
+
+bot.onText(/\/stop/, async (msg) => {
+  if (msg.chat.type !== 'group' && msg.chat.type !== 'supergroup') {
+    console.log('not group')
+    return
+  }
+
+  const memberInfo = await bot.getChatMember(msg.chat.id, msg.from.id)
+  if (memberInfo.status !== 'creator' && memberInfo.status !== 'administrator') {
+    console.log('not admin')
+    return
+  }
+
+  const priceMessage = db.main.get(msg.chat.id).get('priceMessage').value()
+
+  try {
+    await bot.editMessageText('已停止更新', priceMessage)
+    await bot.unpinChatMessage(priceMessage.chat_id)
+  } catch (error) {
+    console.log('pinChatMessage error', error.message)
+  }
+
+  db.main.unset(msg.chat.id).write()
+})

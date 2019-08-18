@@ -3,45 +3,20 @@
     "es6": true,
     "node": true
   },
-  "extends": [
-    "eslint:recommended"
-  ],
+  "parser": "babel-eslint",
   "parserOptions": {
-    "sourceType": "module"
+    "sourceType": "module",
+    "ecmaFeatures": {
+      "experimentalObjectRestSpread": true
+    }
   },
+  "extends": [
+    "standard"
+  ],
   "rules": {
-    "indent": [
-      "error",
-      "tab",
-      {
-        "SwitchCase": 1
-      }
-    ],
-    "semi": [
-      "error",
-      "never"
-    ],
-    "eol-last": [
-      "error",
-      "always"
-    ],
-    "no-console": "off",
-    "eqeqeq": [
-      "error",
-      "always",
-      {
-        "null": "ignore"
-      }
-    ],
     "comma-dangle": [
-      "warn",
-      {
-        "arrays": "always-multiline",
-        "objects": "always-multiline",
-        "imports": "always-multiline",
-        "exports": "ignore",
-        "functions": "ignore"
-      }
+      "error",
+      "always-multiline"
     ]
   }
 }

@@ -10,21 +10,26 @@
     "node": "babel-node --"
   },
   "dependencies": {
-    "axios": "^0.18.0",
-    "binance-api-node": "^0.8.0",
-    "blockchain.info": "^2.12.1",
-    "cloudscraper": "^1.5.0",
-    "lodash": "^4.17.10",
+    "axios": "^0.19.0",
+    "lodash": "^4.17.15",
     "lowdb": "^1.0.0",
-    "moment": "^2.22.1",
-    "moment-timezone": "^0.5.17",
-    "node-binance-api": "^0.6.0",
-    "quiche": "^0.3.0",
-    "telegraf": "^3.21.1"
+    "moment": "^2.24.0",
+    "moment-timezone": "^0.5.26",
+    "node-telegram-bot-api": "^0.30.0"
   },
   "devDependencies": {
-    "babel-cli": "^6.26.0",
-    "babel-core": "^6.26.0",
-    "babel-preset-env": "^1.6.1"
+    "@babel/cli": "^7.5.5",
+    "@babel/core": "^7.5.5",
+    "@babel/node": "^7.5.5",
+    "@babel/plugin-proposal-class-properties": "^7.5.5",
+    "@babel/preset-env": "^7.5.5",
+    "babel-eslint": "^10.0.2",
+    "babel-plugin-module-resolver": "^3.2.0",
+    "eslint": "^6.1.0",
+    "eslint-config-standard": "^13.0.1",
+    "eslint-plugin-import": "^2.18.2",
+    "eslint-plugin-node": "^9.1.0",
+    "eslint-plugin-promise": "^4.2.1",
+    "eslint-plugin-standard": "^4.0.0"
   }
 }

@@ -1,14 +1,10 @@
-import lowdb from "lowdb"
-import FileSync from "lowdb/adapters/FileSync"
+import low from 'lowdb'
+import FileSync from 'lowdb/adapters/FileSync'
 
-const adapter = new FileSync("db.json")
-const db = lowdb(adapter)
+const config = low(new FileSync('config/config.json'))
+const main = low(new FileSync('db.json'))
 
-db.defaults({
-	users: {},
-	groups: {},
-	wsGroups: {},
-})
-	.write()
-
-export default db
+export default {
+  config,
+  main,
+}

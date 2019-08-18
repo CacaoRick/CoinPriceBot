@@ -4,9 +4,9 @@
   "main": "build/index.js",
   "license": "MIT",
   "scripts": {
-    "start": "node build/index.js",
+    "start": "babel-node src/index.js",
     "build": "babel src -d build",
-    "dev": "babel-node src/index.js",
+    "serve": "node build/index.js",
     "node": "babel-node --"
   },
   "dependencies": {

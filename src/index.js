@@ -1,18 +1,101 @@
-import command from "./command"
+import bitfinex from 'bitfinex'
+import db from 'db'
+import bot from 'telegram'
+import updater from 'updater'
 
-import bot from "./bot"
+updater.start()
 
-bot.catch((error) => {
-	console.error("Global error catch", error)
+export const helpMessage = [
+  `/price \`[幣種] [幣種]\``,
+  `察看目前的價格，預設以 USD 查詢，例如：`,
+  `\`/price eth\``,
+  `後方可加上第二種貨幣，例如要查 ETH-BTC 價格：`,
+  `\`/price eth btc\``,
+].join('\n')
+
+bot.onText(/\/help/, (msg) => {
+  bot.sendMessage(msg.chat.id, helpMessage, {
+    parse_mode: 'Markdown',
+    reply_to_message_id: msg.message_id,
+  })
 })
 
-bot.command("/help", command.help)
-bot.command("/price", command.price)
-bot.command("/buy", command.exchange)
-bot.command("/sell", command.exchange)
-bot.command("/avg", command.exchange)
-bot.command("/exchange", command.exchange)
-bot.command("/blockHeight", command.blockHeight)
-bot.command("/wsprice", command.wsprice)
+bot.on('error', (error) => {
+  console.log(error)
+})
 
-bot.startPolling()
+bot.onText(/\/price/, async (msg) => {
+  const params = msg.text.split(' ')
+  if (params.length === 1) {
+    bot.sendMessage(msg.chat.id, helpMessage, {
+      parse_mode: 'Markdown',
+      reply_to_message_id: msg.message_id,
+    })
+    return
+  }
+
+  const currency = params[1] ? params[1].toUpperCase() : 'BTC'
+  const base = params[2] ? params[2].toUpperCase() : 'USD'
+
+  // 送出 Loading...
+  const messageResponse = await bot.sendMessage(
+    msg.chat.id,
+    'Loading...',
+    {
+      reply_to_message_id: msg.message_id,
+    }
+  )
+  const messageToEdit = {
+    chat_id: messageResponse.chat.id,
+    message_id: messageResponse.message_id,
+  }
+
+  try {
+    const apiResponse = await bitfinex.lastPrice(`t${currency}${base}`)
+    if (apiResponse[0] === 'error') {
+      bot.editMessageText(
+        apiResponse[2],
+        messageToEdit
+      )
+      return
+    }
+
+    bot.editMessageText(
+      `${apiResponse[6]} ${base}`,
+      messageToEdit
+    )
+  } catch (error) {
+    console.log('error', error.message)
+    bot.editMessageText(
+      '錯誤了',
+      messageToEdit
+    )
+  }
+})
+
+bot.onText(/\/pin/, async (msg) => {
+  if (msg.chat.type !== 'group' && msg.chat.type !== 'supergroup') {
+    console.log('not group')
+    return
+  }
+
+  const memberInfo = await bot.getChatMember(msg.chat.id, msg.from.id)
+  if (memberInfo.status !== 'creator' && memberInfo.status !== 'administrator') {
+    console.log('not admin')
+    return
+  }
+
+  const priceMessageResponse = await bot.sendMessage(msg.chat.id, 'Loading...')
+  const statusMessageResponse = await bot.sendMessage(msg.chat.id, 'Loading...')
+
+  db.main.set(msg.chat.id, {
+    priceMessage: {
+      chat_id: msg.chat.id,
+      message_id: priceMessageResponse.message_id,
+    },
+    statusMessage: {
+      chat_id: msg.chat.id,
+      message_id: statusMessageResponse.message_id,
+    },
+  }).write()
+})

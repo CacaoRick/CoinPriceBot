@@ -58,7 +58,7 @@ async function update () {
         })
     })
   } catch (error) {
-    console.log('update', error)
+    console.log('update', error.message)
   }
 }
 
@@ -72,6 +72,6 @@ async function updateSymbols () {
     symbols = top3.map(currency => `t${currency.symbol}USD`)
     symbols.push('fUSD')
   } catch (error) {
-    console.log('updateSymbols', error)
+    console.log('updateSymbols', error.message)
   }
 }

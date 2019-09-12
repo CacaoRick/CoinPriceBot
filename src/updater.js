@@ -11,8 +11,8 @@ let symbols = ['tBTCUSD', 'tETHUSD']
 export async function start () {
   await updateSymbols()
   update()
-  setInterval(update, 15 * 1000)
-  setInterval(updateSymbols, 60 * 1000)
+  setInterval(update, 10 * 1000)
+  setInterval(updateSymbols, 10 * 60 * 1000)
 }
 
 async function update () {

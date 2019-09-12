@@ -35,7 +35,7 @@ async function update () {
         priceMessages.push(`${result[0].replace('t', '').replace('USD', '')} \`${price.toFixed(factoryDigital)}\``)
       } else {
         // fUSD 利率 (FRR)
-        const rate = result[0]
+        const rate = result[1]
         rateMessage = `% \`${(100 * rate).toFixed(4)}\``
       }
     })

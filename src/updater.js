@@ -6,7 +6,7 @@ import bitfinex from 'bitfinex'
 import getTop from 'marketcap'
 
 let lastMessage = null
-let symbols = ['BTC', 'ETH']
+let symbols = ['tBTCUSD', 'tETHUSD']
 
 export async function start () {
   await updateSymbols()

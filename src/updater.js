@@ -6,13 +6,13 @@ import bitfinex from 'bitfinex'
 import getTop from 'marketcap'
 
 let lastMessage = null
-let symbols = ['tBTCUSD', 'tETHUSD']
+let symbols = ['tBTCUSD', 'tETHUSD', 'tXRPUSD']
 
 export async function start () {
   await updateSymbols()
   update()
   setInterval(update, 10 * 1000)
-  setInterval(updateSymbols, 10 * 60 * 1000)
+  setInterval(updateSymbols, 60 * 60 * 1000)
 }
 
 async function update () {

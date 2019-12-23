@@ -68,7 +68,7 @@ bot.onText(/\/price/, async (msg) => {
   } catch (error) {
     console.log('bitfinex error', error.message)
     try {
-      const binanceResponse = await binance.dailyStats({ symbol: `${currency}${base}` })
+      const binanceResponse = await binance.dailyStats({ symbol: `${currency}${base === 'USD' ? 'USDT' : base}` })
       bot.editMessageText(
         `${binanceResponse.lastPrice} ${base}`,
         messageToEdit

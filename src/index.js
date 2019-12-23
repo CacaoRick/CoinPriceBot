@@ -6,21 +6,6 @@ import updater from 'updater'
 
 updater.start()
 
-async function retryWithBinance (currency, base, messageToEdit) {
-  try {
-    const binanceResponse = await binance.dailyStats({ symbol: `${currency}${base}` })
-    bot.editMessageText(
-      `${binanceResponse.lastPrice} ${base}`,
-      messageToEdit
-    )
-  } catch (error) {
-    bot.editMessageText(
-      '錯誤了',
-      messageToEdit
-    )
-  }
-}
-
 export const helpMessage = [
   `/price \`[幣種] [幣種]\``,
   `察看目前的價格，預設以 USD 查詢，例如：`,
@@ -66,6 +51,7 @@ bot.onText(/\/price/, async (msg) => {
     message_id: messageResponse.message_id,
   }
 
+  let isError = false
   try {
     const apiResponse = await bitfinex.lastPrice(`t${currency}${base}`)
     if (apiResponse[0] === 'error') {
@@ -81,8 +67,22 @@ bot.onText(/\/price/, async (msg) => {
       messageToEdit
     )
   } catch (error) {
+    isError = true
     console.log('error', error.message)
-    retryWithBinance(currency, base, messageToEdit)
+  }
+  if (isError) {
+    try {
+      const binanceResponse = await binance.dailyStats({ symbol: `${currency}${base}` })
+      bot.editMessageText(
+        `${binanceResponse.lastPrice} ${base}`,
+        messageToEdit
+      )
+    } catch (error) {
+      bot.editMessageText(
+        '錯誤了',
+        messageToEdit
+      )
+    }
   }
 })
 

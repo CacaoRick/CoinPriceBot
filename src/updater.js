@@ -6,13 +6,13 @@ import bitfinex from 'bitfinex'
 import getTop from 'marketcap'
 
 let lastMessage = null
-let symbols = ['BTC', 'ETH']
+let symbols = ['tBTCUSD', 'tETHUSD', 'tXRPUSD', 'fUSD']
 
 export async function start () {
   await updateSymbols()
   update()
-  setInterval(update, 15 * 1000)
-  setInterval(updateSymbols, 60 * 1000)
+  setInterval(update, 5 * 1000)
+  setInterval(updateSymbols, 60 * 60 * 1000)
 }
 
 async function update () {
@@ -34,7 +34,7 @@ async function update () {
         const factoryDigital = 5 - price.toFixed(0).length
         priceMessages.push(`${result[0].replace('t', '').replace('USD', '')} \`${price.toFixed(factoryDigital)}\``)
       } else {
-        // fUSD 利率
+        // fUSD 最後利率
         const rate = result[10]
         rateMessage = `% \`${(100 * rate).toFixed(4)}\``
       }
@@ -58,7 +58,7 @@ async function update () {
         })
     })
   } catch (error) {
-    console.log('update', error)
+    console.log('update', error.message)
   }
 }
 
@@ -72,6 +72,6 @@ async function updateSymbols () {
     symbols = top3.map(currency => `t${currency.symbol}USD`)
     symbols.push('fUSD')
   } catch (error) {
-    console.log('updateSymbols', error)
+    console.log('updateSymbols', error.message)
   }
 }

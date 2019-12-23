@@ -66,7 +66,7 @@ bot.onText(/\/price/, async (msg) => {
       messageToEdit
     )
   } catch (error) {
-    console.log('error', error.message)
+    console.log('bitfinex error', error.message)
     try {
       const binanceResponse = await binance.dailyStats({ symbol: `${currency}${base}` })
       bot.editMessageText(
@@ -74,6 +74,7 @@ bot.onText(/\/price/, async (msg) => {
         messageToEdit
       )
     } catch (error) {
+      console.log('binance error', error.message)
       bot.editMessageText(
         '錯誤了',
         messageToEdit

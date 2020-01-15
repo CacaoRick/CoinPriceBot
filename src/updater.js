@@ -5,7 +5,7 @@ import bot from 'telegram'
 import bitfinex from 'bitfinex'
 import getTop from 'marketcap'
 
-let lastMessage = null
+const lastMessage = {}
 let symbols = ['tBTCUSD', 'tETHUSD', 'tXRPUSD', 'fUSD']
 
 export async function start () {
@@ -41,10 +41,10 @@ async function update () {
     })
 
     // 更新訊息
-    _.forEach(db.main.value(), async (group) => {
+    _.forEach(db.main.value(), async (group, groupId) => {
       const newMessage = [rateMessage, ...priceMessages].join(' |\n')
-      if (lastMessage !== newMessage) {
-        lastMessage = newMessage
+      if (lastMessage[groupId] !== newMessage) {
+        lastMessage[groupId] = newMessage
         await bot.editMessageText(newMessage, {
           parse_mode: 'Markdown',
           ...group.priceMessage,

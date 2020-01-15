@@ -5,7 +5,7 @@
   "license": "MIT",
   "scripts": {
     "start": "babel-node src/index.js",
-    "build": "babel src -d build",
+    "build": "babel src -d build --source-maps",
     "serve": "node build/index.js",
     "node": "babel-node --"
   },

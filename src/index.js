@@ -61,16 +61,24 @@ bot.onText(/^\/price/, async (msg) => {
       throw new Error('bitfinex response error', apiResponse[2])
     }
 
+    const price = apiResponse[6]
+    const factoryDigital = 5 - price.toFixed(0).length
+    const dailyChange = (apiResponse[5] > 0 ? '+' : '') + (apiResponse[5] * 100).toFixed(2) + '%'
+
     bot.editMessageText(
-      `${apiResponse[6]} ${base}`,
+      `${price.toFixed(factoryDigital)} ${base} (${dailyChange})`,
       messageToEdit
     )
   } catch (error) {
     console.log('bitfinex error', error.message)
     try {
       const binanceResponse = await binance.dailyStats({ symbol: `${currency}${base === 'USD' ? 'USDT' : base}` })
+      const price = Number(binanceResponse.lastPrice)
+      const factoryDigital = 5 - price.toFixed(0).length
+      const dailyChange = (Number(binanceResponse.priceChangePercent) > 0 ? '+' : '') + binanceResponse.priceChangePercent + '%'
+
       bot.editMessageText(
-        `${binanceResponse.lastPrice} ${base}`,
+        `${price.toFixed(factoryDigital)} ${base} (${dailyChange})`,
         messageToEdit
       )
     } catch (error) {

@@ -1,4 +1,5 @@
 import bitfinex from 'bitfinex'
+import binance from 'binance'
 import db from 'db'
 import bot from 'telegram'
 import updater from 'updater'
@@ -57,7 +58,7 @@ bot.onText(/^\/price/, async (msg) => {
         apiResponse[2],
         messageToEdit
       )
-      return
+      throw new Error('bitfinex response error', apiResponse[2])
     }
 
     bot.editMessageText(
@@ -65,11 +66,20 @@ bot.onText(/^\/price/, async (msg) => {
       messageToEdit
     )
   } catch (error) {
-    console.log('error', error.message)
-    bot.editMessageText(
-      '錯誤了',
-      messageToEdit
-    )
+    console.log('bitfinex error', error.message)
+    try {
+      const binanceResponse = await binance.dailyStats({ symbol: `${currency}${base === 'USD' ? 'USDT' : base}` })
+      bot.editMessageText(
+        `${binanceResponse.lastPrice} ${base}`,
+        messageToEdit
+      )
+    } catch (error) {
+      console.log('binance error', error.message)
+      bot.editMessageText(
+        '錯誤了',
+        messageToEdit
+      )
+    }
   }
 })
 

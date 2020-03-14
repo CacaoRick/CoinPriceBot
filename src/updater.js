@@ -8,13 +8,12 @@ import getTop from 'marketcap'
 
 const lastMessage = {}
 let symbols = ['tBTCUSD', 'tETHUSD', 'fUSD']
-let mco
 
 export async function start () {
   // await updateSymbols()
   update()
   setInterval(update, 5 * 1000)
-  setInterval(updateSymbols, 60 * 60 * 1000)
+  // setInterval(updateSymbols, 60 * 60 * 1000)
 }
 
 async function update () {

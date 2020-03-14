@@ -33,7 +33,7 @@ async function update () {
     const price = Number(binanceResponse.lastPrice)
     const factoryDigital = 5 - price.toFixed(0).length
     const mcoPrice = price.toFixed(factoryDigital)
-    const mcoMessage = `MCO ${mcoPrice}`
+    const mcoMessage = `MCO \`${mcoPrice}\``
 
     // 準備訊息
     results.forEach((result) => {

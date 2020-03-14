@@ -1,4 +1,5 @@
 import _ from 'lodash'
+import binance from 'binance'
 import moment from 'moment-timezone'
 import db from 'db'
 import bot from 'telegram'
@@ -6,10 +7,11 @@ import bitfinex from 'bitfinex'
 import getTop from 'marketcap'
 
 const lastMessage = {}
-let symbols = ['tBTCUSD', 'tETHUSD', 'tXRPUSD', 'fUSD']
+let symbols = ['tBTCUSD', 'tETHUSD', 'fUSD']
+let mco
 
 export async function start () {
-  await updateSymbols()
+  // await updateSymbols()
   update()
   setInterval(update, 5 * 1000)
   setInterval(updateSymbols, 60 * 60 * 1000)
@@ -25,6 +27,13 @@ async function update () {
     let rateMessage = ''
 
     const results = await bitfinex.lastPrices(symbols.join(','))
+
+    // MCO
+    const binanceResponse = await binance.dailyStats({ symbol: 'MCOUSDT' })
+    const price = Number(binanceResponse.lastPrice)
+    const factoryDigital = 5 - price.toFixed(0).length
+    const mcoPrice = price.toFixed(factoryDigital)
+    const mcoMessage = `MCO ${mcoPrice}`
 
     // 準備訊息
     results.forEach((result) => {
@@ -42,7 +51,7 @@ async function update () {
 
     // 更新訊息
     _.forEach(db.main.value(), async (group, groupId) => {
-      const newMessage = [rateMessage, ...priceMessages].join(' |\n')
+      const newMessage = [rateMessage, ...priceMessages, mcoMessage].join(' |\n')
       if (lastMessage[groupId] !== newMessage) {
         lastMessage[groupId] = newMessage
         await bot.editMessageText(newMessage, {

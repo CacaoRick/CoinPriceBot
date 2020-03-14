@@ -31,8 +31,7 @@ async function update () {
     // MCO
     const binanceResponse = await binance.dailyStats({ symbol: 'MCOUSDT' })
     const price = Number(binanceResponse.lastPrice)
-    const factoryDigital = 5 - price.toFixed(0).length
-    const mcoPrice = price.toFixed(factoryDigital)
+    const mcoPrice = price.toFixed(3)
     const mcoMessage = `MCO \`${mcoPrice}\``
 
     // 準備訊息

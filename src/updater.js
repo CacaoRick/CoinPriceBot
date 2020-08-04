@@ -49,7 +49,7 @@ async function update () {
         priceChangeMessages.push(`${currency} \`${dailyChange}%\``)
       } else {
         // fUSD 最後利率
-        const rate = (100 * rate).toFixed(4)
+        const rate = (100 * result[10]).toFixed(4)
         const dailyChange = result[9] > 0 ? '+' : '' + (100 * result[9]).toFixed(2)
         rateMessage = `f$ \`${rate}%\``
         rateChangeMessage = `f$ \`${dailyChange}%\``

@@ -7,11 +7,12 @@ import updater from 'updater'
 updater.start()
 
 export const helpMessage = [
-  `/price \`[幣種] [幣種]\``,
-  `察看目前的價格，預設以 USD 查詢，例如：`,
-  `\`/price eth\``,
-  `後方可加上第二種貨幣，例如要查 ETH-BTC 價格：`,
-  `\`/price eth btc\``,
+  '/price `[幣種] [幣種]`',
+  '察看目前的價格，預設以 USD 查詢，例如：',
+  '`/price eth`',
+  '後方可加上第二種貨幣，例如要查 ETH-BTC 價格：',
+  '`/price eth btc`',
+  '目前支援的 API： **Bitfinex** **Binance** 及 **Crypto.com**',
 ].join('\n')
 
 bot.onText(/^\/help$/, (msg) => {
@@ -51,6 +52,9 @@ bot.onText(/^\/price/, async (msg) => {
     message_id: messageResponse.message_id,
   }
 
+  const messages = []
+
+  // Bitfinex
   try {
     const apiResponse = await bitfinex.lastPrice(`t${currency}${base}`)
     if (apiResponse[0] === 'error') {
@@ -60,34 +64,51 @@ bot.onText(/^\/price/, async (msg) => {
       )
       throw new Error('bitfinex response error', apiResponse[2])
     }
-
+    
     const price = apiResponse[6]
-    const factoryDigital = 5 - price.toFixed(0).length
     const dailyChange = (apiResponse[5] > 0 ? '+' : '') + (apiResponse[5] * 100).toFixed(2) + '%'
-
-    bot.editMessageText(
-      `${price.toFixed(factoryDigital)} ${base} (${dailyChange})`,
-      messageToEdit
-    )
+    const factoryDigital = 5 - price.toFixed(0).length
+    messages.push('**Bitfinex**')
+    messages.push(`${price.toFixed(factoryDigital)} ${base} (${dailyChange})`)
   } catch (error) {
     console.log('bitfinex error', error.message)
-    try {
-      const binanceResponse = await binance.dailyStats({ symbol: `${currency}${base === 'USD' ? 'USDT' : base}` })
-      const price = Number(binanceResponse.lastPrice)
-      const factoryDigital = 5 - price.toFixed(0).length
-      const dailyChange = (Number(binanceResponse.priceChangePercent) > 0 ? '+' : '') + binanceResponse.priceChangePercent + '%'
+  }
 
-      bot.editMessageText(
-        `${price.toFixed(factoryDigital)} ${base} (${dailyChange})`,
-        messageToEdit
-      )
-    } catch (error) {
-      console.log('binance error', error.message)
-      bot.editMessageText(
-        '錯誤了',
-        messageToEdit
-      )
-    }
+  // Binance
+  try {
+    const binanceResponse = await binance.dailyStats({ symbol: `${currency}${base === 'USD' ? 'USDT' : base}` })
+    const price = Number(binanceResponse.lastPrice)
+    const dailyChange = (Number(binanceResponse.priceChangePercent) > 0 ? '+' : '') + binanceResponse.priceChangePercent + '%'
+    const factoryDigital = 5 - price.toFixed(0).length
+    messages.push('**Binance**')
+    messages.push(`${price.toFixed(factoryDigital)} ${base} (${dailyChange})`)
+  } catch (error) {
+    console.log('binance error', error.message)
+  }
+
+  // Crypto.com
+  try {
+    // https://exchange-docs.crypto.com/#public-get-ticker
+    const response = await axios.get(`https://api.crypto.com/v2/public/get-ticker?instrument_name=${currency}_${base === 'USD' ? 'USDT' : base}`)
+    const price = _.get(response, 'data.result.data.a') // last price
+    const dailyChange = _.get(response, 'data.result.data.a')
+    const factoryDigital = 5 - price.toFixed(0).length
+    messages.push('**crypto.com**')
+    messages.push(`${price.toFixed(factoryDigital)} ${base} (${dailyChange})`)
+  } catch (error) {
+    console.log('crypto.com error', error.message)
+  }
+
+  if (messages.length > 0) {
+    bot.editMessageText(
+      messages.join('\n'),
+      messageToEdit
+    )
+  } else {
+    bot.editMessageText(
+      '找不到QQ',
+      messageToEdit
+    )
   }
 })
 

@@ -67,7 +67,7 @@ async function update () {
           ...group.priceMessage,
         })
         setTimeout(() => {
-          await bot.editMessageText(newChangeMessage, {
+          bot.editMessageText(newChangeMessage, {
             parse_mode: 'Markdown',
             ...group.priceMessage,
           })

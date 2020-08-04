@@ -70,7 +70,7 @@ bot.onText(/^\/price/, async (msg) => {
     const price = apiResponse[6]
     const dailyChange = (apiResponse[5] > 0 ? '+' : '') + (apiResponse[5] * 100).toFixed(2) + '%'
     const factoryDigital = 5 - price.toFixed(0).length
-    messages.push('**Bitfinex**')
+    messages.push('`Bitfinex`')
     messages.push(`${price.toFixed(factoryDigital)} ${base} (${dailyChange})`)
   } catch (error) {
     console.log('bitfinex error', error.message)
@@ -82,7 +82,7 @@ bot.onText(/^\/price/, async (msg) => {
     const price = Number(binanceResponse.lastPrice)
     const dailyChange = (Number(binanceResponse.priceChangePercent) > 0 ? '+' : '') + binanceResponse.priceChangePercent + '%'
     const factoryDigital = 5 - price.toFixed(0).length
-    messages.push('**Binance**')
+    messages.push('`Binance`')
     messages.push(`${price.toFixed(factoryDigital)} ${base} (${dailyChange})`)
   } catch (error) {
     console.log('binance error', error.message)
@@ -96,7 +96,7 @@ bot.onText(/^\/price/, async (msg) => {
     const dailyChange = _.get(response, 'data.result.data.c')
     const factoryDigital = 5 - price.toFixed(0).length
     if (price) {
-      messages.push('**crypto.com**')
+      messages.push('`crypto.com`')
       messages.push(`${price.toFixed(factoryDigital)} ${base} (${dailyChange})`)
     }
   } catch (error) {

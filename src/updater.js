@@ -1,5 +1,5 @@
 import _ from 'lodash'
-import binance from 'binance'
+import axios from 'axios'
 import moment from 'moment-timezone'
 import db from 'db'
 import bot from 'telegram'
@@ -28,9 +28,10 @@ async function update () {
     const results = await bitfinex.lastPrices(symbols.join(','))
 
     // CRO
-    const binanceResponse = await binance.dailyStats({ symbol: 'CROUSDT' })
-    const price = Number(binanceResponse.lastPrice)
-    const croPrice = price.toFixed(3)
+    // https://exchange-docs.crypto.com/#public-get-ticker
+    const response = await axios.get('https://api.crypto.com/v2/public/get-ticker?instrument_name=CRO_USDT')
+    const price = _.get(response, 'data.result.data.a') // last price
+    const croPrice = price.toFixed(4)
     const croMessage = `CRO \`${croPrice}\``
 
     // 準備訊息

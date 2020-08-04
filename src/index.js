@@ -1,3 +1,4 @@
+import _ from 'lodash'
 import axios from 'axios'
 import binance from 'binance'
 import bitfinex from 'bitfinex'
@@ -13,7 +14,7 @@ export const helpMessage = [
   '`/price eth`',
   '後方可加上第二種貨幣，例如要查 ETH-BTC 價格：',
   '`/price eth btc`',
-  '目前支援的 API： `Bitfinex` `Binance` 及 `Crypto.com`',
+  '目前支援的 API： `Bitfinex Binance Crypto.com`',
 ].join('\n')
 
 bot.onText(/^\/help$/, (msg) => {
@@ -94,8 +95,10 @@ bot.onText(/^\/price/, async (msg) => {
     const price = _.get(response, 'data.result.data.a') // last price
     const dailyChange = _.get(response, 'data.result.data.a')
     const factoryDigital = 5 - price.toFixed(0).length
-    messages.push('**crypto.com**')
-    messages.push(`${price.toFixed(factoryDigital)} ${base} (${dailyChange})`)
+    if (price) {
+      messages.push('**crypto.com**')
+      messages.push(`${price.toFixed(factoryDigital)} ${base} (${dailyChange})`)
+    }
   } catch (error) {
     console.log('crypto.com error', error.message)
   }

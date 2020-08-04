@@ -1,5 +1,6 @@
-import bitfinex from 'bitfinex'
+import axios from 'axios'
 import binance from 'binance'
+import bitfinex from 'bitfinex'
 import db from 'db'
 import bot from 'telegram'
 import updater from 'updater'
@@ -12,7 +13,7 @@ export const helpMessage = [
   '`/price eth`',
   '後方可加上第二種貨幣，例如要查 ETH-BTC 價格：',
   '`/price eth btc`',
-  '目前支援的 API： **Bitfinex** **Binance** 及 **Crypto.com**',
+  '目前支援的 API： `Bitfinex` `Binance` 及 `Crypto.com`',
 ].join('\n')
 
 bot.onText(/^\/help$/, (msg) => {

@@ -106,7 +106,8 @@ bot.onText(/^\/price/, async (msg) => {
   if (messages.length > 0) {
     bot.editMessageText(
       messages.join('\n'),
-      messageToEdit
+      messageToEdit,
+      { parse_mode: 'Markdown' }
     )
   } else {
     bot.editMessageText(

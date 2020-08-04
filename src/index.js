@@ -93,7 +93,7 @@ bot.onText(/^\/price/, async (msg) => {
     // https://exchange-docs.crypto.com/#public-get-ticker
     const response = await axios.get(`https://api.crypto.com/v2/public/get-ticker?instrument_name=${currency}_${base === 'USD' ? 'USDT' : base}`)
     const price = _.get(response, 'data.result.data.a') // last price
-    const dailyChange = _.get(response, 'data.result.data.a')
+    const dailyChange = _.get(response, 'data.result.data.c')
     const factoryDigital = 5 - price.toFixed(0).length
     if (price) {
       messages.push('**crypto.com**')

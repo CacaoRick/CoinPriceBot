@@ -83,7 +83,7 @@ bot.onText(/^\/price/, async (msg) => {
     const dailyChange = (Number(binanceResponse.priceChangePercent) > 0 ? '+' : '') + binanceResponse.priceChangePercent + '%'
     const factoryDigital = 5 - price.toFixed(0).length
     messages.push('`Binance`')
-    messages.push(`${price.toFixed(factoryDigital)} ${base} (${dailyChange})`)
+    messages.push(`${price.toFixed(factoryDigital)} ${base === 'USD' ? 'USDT' : base} (${dailyChange})`)
   } catch (error) {
     console.log('binance error', error.message)
   }
@@ -97,7 +97,7 @@ bot.onText(/^\/price/, async (msg) => {
     const factoryDigital = 5 - price.toFixed(0).length
     if (price) {
       messages.push('`crypto.com`')
-      messages.push(`${price.toFixed(factoryDigital)} ${base} (${dailyChange})`)
+      messages.push(`${price.toFixed(factoryDigital)} ${base === 'USD' ? 'USDT' : base} (${dailyChange})`)
     }
   } catch (error) {
     console.log('crypto.com error', error.message)

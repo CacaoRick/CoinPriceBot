@@ -42,7 +42,7 @@ async function update () {
       if (result.length === 11) {
         const currency = result[0].replace('t', '').replace('USD', '')
         const price = result[7]
-        const dailyChange = result[6] > 0 ? '+' : '' + (100 * result[6]).toFixed(2)
+        const dailyChange = (result[6] > 0 ? '+' : '') + (100 * result[6]).toFixed(2)
         // 計算小數後位數
         const factoryDigital = 5 - price.toFixed(0).length
         priceMessages.push(`${currency} \`${price.toFixed(factoryDigital)}\``)
@@ -50,7 +50,7 @@ async function update () {
       } else {
         // fUSD 最後利率
         const rate = (100 * result[10]).toFixed(4)
-        const dailyChange = result[9] > 0 ? '+' : '' + (100 * result[9]).toFixed(2)
+        const dailyChange = (result[9] > 0 ? '+' : '') + (100 * result[9]).toFixed(2)
         rateMessage = `f$ \`${rate}%\``
         rateChangeMessage = `f$ \`${dailyChange}%\``
       }

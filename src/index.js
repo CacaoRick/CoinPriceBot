@@ -14,7 +14,7 @@ export const helpMessage = [
   `\`/price eth btc\``,
 ].join('\n')
 
-bot.onText(/^\/help/, (msg) => {
+bot.onText(/^\/help$/, (msg) => {
   bot.sendMessage(msg.chat.id, helpMessage, {
     parse_mode: 'Markdown',
     reply_to_message_id: msg.message_id,
@@ -91,7 +91,7 @@ bot.onText(/^\/price/, async (msg) => {
   }
 })
 
-bot.onText(/^\/pin/, async (msg) => {
+bot.onText(/^\/pin$/, async (msg) => {
   if (msg.chat.type !== 'group' && msg.chat.type !== 'supergroup') {
     return
   }
@@ -122,7 +122,7 @@ bot.onText(/^\/pin/, async (msg) => {
   }).write()
 })
 
-bot.onText(/^\/stop/, async (msg) => {
+bot.onText(/^\/stop$/, async (msg) => {
   if (msg.chat.type !== 'group' && msg.chat.type !== 'supergroup') {
     return
   }

@@ -27,11 +27,11 @@ async function update () {
 
     const results = await bitfinex.lastPrices(symbols.join(','))
 
-    // MCO
-    const binanceResponse = await binance.dailyStats({ symbol: 'MCOUSDT' })
+    // CRO
+    const binanceResponse = await binance.dailyStats({ symbol: 'CROUSDT' })
     const price = Number(binanceResponse.lastPrice)
-    const mcoPrice = price.toFixed(3)
-    const mcoMessage = `MCO \`${mcoPrice}\``
+    const croPrice = price.toFixed(3)
+    const croMessage = `CRO \`${croPrice}\``
 
     // 準備訊息
     results.forEach((result) => {
@@ -49,7 +49,7 @@ async function update () {
 
     // 更新訊息
     _.forEach(db.main.value(), async (group, groupId) => {
-      const newMessage = [rateMessage, ...priceMessages, mcoMessage].join(' |\n')
+      const newMessage = [rateMessage, ...priceMessages, croMessage].join(' |\n')
       if (lastMessage[groupId] !== newMessage) {
         lastMessage[groupId] = newMessage
         await bot.editMessageText(newMessage, {

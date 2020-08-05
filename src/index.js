@@ -12,14 +12,15 @@ export const helpMessage = [
   '/price `<幣種1> [幣種2]`',
   '查詢 `幣種1` - `幣種2` 交易對，`幣種2` 預設為 USD/USDT',
   '例如查詢 ETH-USD：',
-  '`/price eth`',
+  '`/price ETH`',
   '查詢 ETH-BTC：',
-  '`/price eth btc`',
+  '`/price ETH BTC`',
   '',
   '/price `<幣種> <購入價格>`',
   '計算現在價格對購入價格漲跌幾％，價格單位為 USD/USDT',
   '例如查詢 1000 USD 購入的 ETH 目前漲跌幾％：',
   '`/price ETH 1000`',
+  '',
   '目前支援的 API： `Bitfinex Binance Crypto.com`',
 ].join('\n')
 

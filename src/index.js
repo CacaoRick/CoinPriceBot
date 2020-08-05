@@ -39,7 +39,16 @@ bot.onText(/^\/price/, async (msg) => {
   }
 
   const currency = params[1] ? params[1].toUpperCase() : 'BTC'
-  const base = params[2] ? params[2].toUpperCase() : 'USD'
+  let base = 'USD'
+  let basePrice = 0
+  if (params[2]) {
+    if (isNaN(params[2])) {
+      basePrice = Number(params[2])
+    } else {
+      // 正常換算
+      base = params[2].toUpperCase()
+    }
+  } 
 
   // 送出 Loading...
   const messageResponse = await bot.sendMessage(
@@ -68,10 +77,16 @@ bot.onText(/^\/price/, async (msg) => {
     }
     
     const price = apiResponse[6]
-    const dailyChange = (apiResponse[5] > 0 ? '+' : '') + (apiResponse[5] * 100).toFixed(2) + '%'
     const factoryDigital = 5 - price.toFixed(0).length
-    messages.push('`Bitfinex`')
-    messages.push(`${price.toFixed(factoryDigital)} ${base} (${dailyChange})`)
+    if (basePrice !== 0) {
+      const diffPercent = (100 * (price - basePrice) / basePrice ).toFixed(2)+ '%'
+      messages.push('`Bitfinex`')
+      messages.push(`${price.toFixed(factoryDigital)} USD (${diffPercent})`)
+    } else {
+      const dailyChange = (apiResponse[5] > 0 ? '+' : '') + (apiResponse[5] * 100).toFixed(2) + '%'
+      messages.push('`Bitfinex`')
+      messages.push(`${price.toFixed(factoryDigital)} ${base} (${dailyChange})`)
+    }
   } catch (error) {
     console.log('bitfinex error', error.message)
   }
@@ -80,10 +95,17 @@ bot.onText(/^\/price/, async (msg) => {
   try {
     const binanceResponse = await binance.dailyStats({ symbol: `${currency}${base === 'USD' ? 'USDT' : base}` })
     const price = Number(binanceResponse.lastPrice)
-    const dailyChange = (Number(binanceResponse.priceChangePercent) > 0 ? '+' : '') + binanceResponse.priceChangePercent + '%'
     const factoryDigital = 5 - price.toFixed(0).length
-    messages.push('`Binance`')
-    messages.push(`${price.toFixed(factoryDigital)} ${base === 'USD' ? 'USDT' : base} (${dailyChange})`)
+
+    if (basePrice !== 0) {
+      const diffPercent = (100 * (price - basePrice) / basePrice ).toFixed(2)+ '%'
+      messages.push('`Binance`')
+      messages.push(`${price.toFixed(factoryDigital)} USDT (${diffPercent})`)
+    } else {
+      const dailyChange = (Number(binanceResponse.priceChangePercent) > 0 ? '+' : '') + binanceResponse.priceChangePercent + '%'
+      messages.push('`Binance`')
+      messages.push(`${price.toFixed(factoryDigital)} ${base === 'USD' ? 'USDT' : base} (${dailyChange})`)
+    }
   } catch (error) {
     console.log('binance error', error.message)
   }
@@ -93,12 +115,19 @@ bot.onText(/^\/price/, async (msg) => {
     // https://exchange-docs.crypto.com/#public-get-ticker
     const response = await axios.get(`https://api.crypto.com/v2/public/get-ticker?instrument_name=${currency}_${base === 'USD' ? 'USDT' : base}`)
     const price = _.get(response, 'data.result.data.a', false) // last price
-    const changePrice = _.get(response, 'data.result.data.c', 0)
+
     if (price) {
-      const dailyChange = (changePrice > 0 ? '+' : '') + (100 * changePrice / (price - changePrice)).toFixed(2) + '%'
       const factoryDigital = 5 - price.toFixed(0).length
-      messages.push('`crypto.com`')
-      messages.push(`${price.toFixed(factoryDigital)} ${base === 'USD' ? 'USDT' : base} (${dailyChange})`)
+      if (basePrice !== 0) {
+        const diffPercent = (100 * (price - basePrice) / basePrice ).toFixed(2)+ '%'
+        messages.push('`crypto.com`')
+        messages.push(`${price.toFixed(factoryDigital)} USDT (${diffPercent})`)
+      } else {
+        const changePrice = _.get(response, 'data.result.data.c', 0)
+        const dailyChange = (changePrice > 0 ? '+' : '') + (100 * changePrice / (price - changePrice)).toFixed(2) + '%'
+        messages.push('`crypto.com`')
+        messages.push(`${price.toFixed(factoryDigital)} ${base === 'USD' ? 'USDT' : base} (${dailyChange})`)
+      }
     }
   } catch (error) {
     console.log('crypto.com error', error.message)

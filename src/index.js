@@ -43,10 +43,10 @@ bot.onText(/^\/price/, async (msg) => {
   let basePrice = 0
   if (params[2]) {
     if (isNaN(params[2])) {
-      basePrice = Number(params[2])
-    } else {
       // 正常換算
       base = params[2].toUpperCase()
+    } else {
+      basePrice = Number(params[2])
     }
   } 
 

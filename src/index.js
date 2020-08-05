@@ -9,11 +9,17 @@ import updater from 'updater'
 updater.start()
 
 export const helpMessage = [
-  '/price `[幣種] [幣種]`',
-  '察看目前的價格，預設以 USD 查詢，例如：',
+  '/price `<幣種1> [幣種2]`',
+  '查詢 `幣種1` - `幣種2` 交易對，`幣種2` 預設為 USD/USDT',
+  '例如查詢 ETH-USD：',
   '`/price eth`',
-  '後方可加上第二種貨幣，例如要查 ETH-BTC 價格：',
+  '查詢 ETH-BTC：',
   '`/price eth btc`',
+  '',
+  '/price `<幣種> <購入價格>`',
+  '計算現在價格對購入價格漲跌幾％，價格單位為 USD/USDT',
+  '例如查詢 1000 USD 購入的 ETH 目前漲跌幾％：',
+  '`/price ETH 1000`',
   '目前支援的 API： `Bitfinex Binance Crypto.com`',
 ].join('\n')
 

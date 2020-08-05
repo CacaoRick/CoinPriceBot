@@ -79,7 +79,7 @@ bot.onText(/^\/price/, async (msg) => {
     const price = apiResponse[6]
     const factoryDigital = 5 - price.toFixed(0).length
     if (basePrice !== 0) {
-      const diffPercent = (100 * (price - basePrice) / basePrice ).toFixed(2)+ '%'
+      const diffPercent = (price - basePrice > 0 ? '+' : '') + (100 * (price - basePrice) / basePrice ).toFixed(2)+ '%'
       messages.push('`Bitfinex`')
       messages.push(`${price.toFixed(factoryDigital)} USD (${diffPercent})`)
     } else {
@@ -98,7 +98,7 @@ bot.onText(/^\/price/, async (msg) => {
     const factoryDigital = 5 - price.toFixed(0).length
 
     if (basePrice !== 0) {
-      const diffPercent = (100 * (price - basePrice) / basePrice ).toFixed(2)+ '%'
+      const diffPercent = (price - basePrice > 0 ? '+' : '') + (100 * (price - basePrice) / basePrice ).toFixed(2)+ '%'
       messages.push('`Binance`')
       messages.push(`${price.toFixed(factoryDigital)} USDT (${diffPercent})`)
     } else {
@@ -119,7 +119,7 @@ bot.onText(/^\/price/, async (msg) => {
     if (price) {
       const factoryDigital = 5 - price.toFixed(0).length
       if (basePrice !== 0) {
-        const diffPercent = (100 * (price - basePrice) / basePrice ).toFixed(2)+ '%'
+        const diffPercent = (price - basePrice > 0 ? '+' : '') + (100 * (price - basePrice) / basePrice ).toFixed(2)+ '%'
         messages.push('`crypto.com`')
         messages.push(`${price.toFixed(factoryDigital)} USDT (${diffPercent})`)
       } else {

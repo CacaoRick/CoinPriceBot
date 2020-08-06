@@ -38,7 +38,7 @@ async function update () {
     const updateAt = moment()
 
     priceMessages.push(`f$ \`${fUSD.displayRate}\``)
-    priceChangeMessages.push(`f$ \`${fUSD.dailyChange}%\``)
+    priceChangeMessages.push(`f$ \`${fUSD.dailyChange}\``)
 
     results.forEach(result => {
       priceMessages.push(`${result.currency} \`${result.displayPrice}\``)

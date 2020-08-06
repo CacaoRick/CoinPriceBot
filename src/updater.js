@@ -10,13 +10,16 @@ import cryptoCom from 'libs/crypto.com'
 
 const updateDuration = 15 * 1000 // update price from api
 const switchMessageDuration = 7.5 * 1000 // switch between price / 24h change
+const updateCurrenciesDuration = 30 * 60 * 1000
 
 const lastMessage = {}
-const currencies = ['BTC', 'ETH']
+let currencies = ['BTC', 'ETH']
 
 export async function start () {
+  await updateCurrencies()
   update()
   setInterval(update, updateDuration)
+  setInterval(updateCurrencies, updateCurrenciesDuration)
 }
 
 async function update () {
@@ -79,12 +82,12 @@ export default {
   start,
 }
 
-async function updateSymbols () {
+async function updateCurrencies () {
   try {
     const top3 = await getTop(3)
-    symbols = top3.map(currency => `t${currency.symbol}USD`)
-    symbols.push('fUSD')
+    currencies = top3.map(currency => currency.symbol)
+    console.log('update top currencies', currencies)
   } catch (error) {
-    console.log('updateSymbols', error.message)
+    console.log('updateCurrencies', error.message)
   }
 }

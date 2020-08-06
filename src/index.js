@@ -35,7 +35,7 @@ bot.onText(/^\/help$/, (msg) => {
 })
 
 bot.on('error', (error) => {
-  console.log(error)
+  console.log(error.message)
 })
 
 bot.onText(/^\/price/, async (msg) => {
@@ -167,6 +167,7 @@ bot.onText(/^\/pin$/, async (msg) => {
   const statusMessageResponse = await bot.sendMessage(msg.chat.id, 'Loading...')
 
   const chatInfo = await bot.getChat(msg.chat.id)
+  console.log('chatInfo', chatInfo)
   if (chatInfo.permissions.can_pin_messages) {
     try {
       await bot.pinChatMessage(msg.chat.id, priceMessageResponse.message_id, { disable_notification: true })
@@ -176,6 +177,7 @@ bot.onText(/^\/pin$/, async (msg) => {
   }
 
   db.main.set(msg.chat.id, {
+    title: chatInfo.title,
     priceMessage: {
       chat_id: msg.chat.id,
       message_id: priceMessageResponse.message_id,
@@ -213,7 +215,7 @@ bot.onText(/^\/stop$/, async (msg) => {
     await bot.editMessageText('已停止更新', priceMessage)
     await bot.unpinChatMessage(priceMessage.chat_id)
   } catch (error) {
-    console.log('pinChatMessage error', error.message)
+    console.log('unpinChatMessage error', error.message)
   }
 
   db.main.unset(msg.chat.id).write()

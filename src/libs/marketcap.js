@@ -1,5 +1,5 @@
 import axios from 'axios'
-import db from 'db'
+import db from 'libs/db'
 
 export default async function getTop (top = 3) {
   const response = await axios.get(

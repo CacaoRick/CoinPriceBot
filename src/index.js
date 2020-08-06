@@ -1,9 +1,8 @@
-import _ from 'lodash'
-import axios from 'axios'
-import binance from 'binance'
-import bitfinex from 'bitfinex'
-import db from 'db'
-import bot from 'telegram'
+import db from 'libs/db'
+import bot from 'libs/telegram'
+import bitfinex from 'libs/bitfinex'
+import binance from 'libs/binance'
+import cryptoCom from 'libs/crypto.com'
 import updater from 'updater'
 
 updater.start()
@@ -24,11 +23,15 @@ export const helpMessage = [
   '目前支援的 API： `Bitfinex Binance Crypto.com`',
 ].join('\n')
 
-bot.onText(/^\/help$/, (msg) => {
+function sendHelp (msg) {
   bot.sendMessage(msg.chat.id, helpMessage, {
     parse_mode: 'Markdown',
     reply_to_message_id: msg.message_id,
   })
+}
+
+bot.onText(/^\/help$/, (msg) => {
+  sendHelp(msg)
 })
 
 bot.on('error', (error) => {
@@ -37,108 +40,92 @@ bot.on('error', (error) => {
 
 bot.onText(/^\/price/, async (msg) => {
   const params = msg.text.split(' ')
-  if (params.length === 1) {
-    bot.sendMessage(msg.chat.id, helpMessage, {
-      parse_mode: 'Markdown',
-      reply_to_message_id: msg.message_id,
-    })
+  if (params.length === 1 || params.length > 3) {
+    sendHelp(msg)
     return
   }
 
-  const currency = params[1] ? params[1].toUpperCase() : 'BTC'
-  let base = 'USD'
-  let basePrice = 0
-  if (params[2]) {
-    if (isNaN(params[2])) {
-      // 正常換算
+  let action = null
+  let currency = null
+  let base = null
+  let targetAmount = null
+  let basePrice = null
+
+  if (params.length === 2) {
+    // 計算價格，base 使用預設值 USD
+    action = 'PRICE'
+    currency = params[1].toUpperCase()
+    base = 'USD'
+    console.log(`[${action}] ${currency}-${base}`)
+  }
+  if (params.length === 3) {
+    if (isNaN(params[1]) && isNaN(params[2])) {
+      // 計算價格，有給 currency 和 base
+      action = 'PRICE'
+      currency = params[1].toUpperCase()
       base = params[2].toUpperCase()
-    } else {
-      basePrice = Number(params[2])
+      console.log(`[${action}] ${currency}-${base}`)
     }
-  } 
+    if (!isNaN(params[1]) && isNaN(params[2])) {
+      // 計算購買 targetAmount x currency 的成本
+      action = 'COST'
+      targetAmount = Math.abs(Number(params[1]))
+      currency = params[2].toUpperCase()
+      base = 'USD'
+      console.log(`[${action}] ${targetAmount} × ${currency}`)
+    }
+    if (isNaN(params[1]) && !isNaN(params[2])) {
+      // 計算用 basePrice 售出 currency 的獲利％
+      action = 'PROFIT'
+      basePrice = Math.abs(Number(params[2]))
+      currency = params[1].toUpperCase()
+      base = 'USD'
+      console.log(`[${action}] ${currency} base: ${basePrice}`)
+    }
+  }
+
+  if (action === null) {
+    sendHelp(msg)
+    return
+  }
 
   // 送出 Loading...
   const messageResponse = await bot.sendMessage(
     msg.chat.id,
     'Loading...',
-    {
-      reply_to_message_id: msg.message_id,
-    }
+    { reply_to_message_id: msg.message_id }
   )
   const messageToEdit = {
     chat_id: messageResponse.chat.id,
     message_id: messageResponse.message_id,
   }
 
+  const promises = []
+  promises.push(bitfinex.ticker(currency, base))
+  promises.push(binance.dailyStats(currency, base))
+  promises.push(cryptoCom.getTicker(currency, base))
+
   const messages = []
-
-  // Bitfinex
-  try {
-    const apiResponse = await bitfinex.lastPrice(`t${currency}${base}`)
-    if (apiResponse[0] === 'error') {
-      bot.editMessageText(
-        apiResponse[2],
-        messageToEdit
-      )
-      throw new Error('bitfinex response error', apiResponse[2])
+  const results = await Promise.all(promises)
+  results.forEach((result) => {
+    if (!result) return
+    messages.push(result.source)
+    switch (action) {
+      case 'PRICE':
+        messages.push(`${result.displayPrice} ${result.base} (${result.dailyChange})`)
+        break
+      case 'COST':
+        const cost = (targetAmount * result.price).toFixed(2)
+        messages.push(`${cost} ${result.base}`)
+        break
+      case 'PROFIT':
+        const profit = (result.price - basePrice > 0 ? '+' : '') + (100 * (result.price - basePrice) / basePrice).toFixed(2) + '%'
+        messages.push(`${result.displayPrice} ${result.base} (${profit})`)
+        break
+      default:
+        break
     }
-    
-    const price = apiResponse[6]
-    const factoryDigital = 5 - price.toFixed(0).length
-    if (basePrice !== 0) {
-      const diffPercent = (price - basePrice > 0 ? '+' : '') + (100 * (price - basePrice) / basePrice ).toFixed(2)+ '%'
-      messages.push('`Bitfinex`')
-      messages.push(`${price.toFixed(factoryDigital)} USD (${diffPercent})`)
-    } else {
-      const dailyChange = (apiResponse[5] > 0 ? '+' : '') + (apiResponse[5] * 100).toFixed(2) + '%'
-      messages.push('`Bitfinex`')
-      messages.push(`${price.toFixed(factoryDigital)} ${base} (${dailyChange})`)
-    }
-  } catch (error) {
-    console.log('bitfinex error', error.message)
-  }
-
-  // Binance
-  try {
-    const binanceResponse = await binance.dailyStats({ symbol: `${currency}${base === 'USD' ? 'USDT' : base}` })
-    const price = Number(binanceResponse.lastPrice)
-    const factoryDigital = 5 - price.toFixed(0).length
-
-    if (basePrice !== 0) {
-      const diffPercent = (price - basePrice > 0 ? '+' : '') + (100 * (price - basePrice) / basePrice ).toFixed(2)+ '%'
-      messages.push('`Binance`')
-      messages.push(`${price.toFixed(factoryDigital)} USDT (${diffPercent})`)
-    } else {
-      const dailyChange = (Number(binanceResponse.priceChangePercent) > 0 ? '+' : '') + binanceResponse.priceChangePercent + '%'
-      messages.push('`Binance`')
-      messages.push(`${price.toFixed(factoryDigital)} ${base === 'USD' ? 'USDT' : base} (${dailyChange})`)
-    }
-  } catch (error) {
-    console.log('binance error', error.message)
-  }
-
-  // Crypto.com
-  try {
-    // https://exchange-docs.crypto.com/#public-get-ticker
-    const response = await axios.get(`https://api.crypto.com/v2/public/get-ticker?instrument_name=${currency}_${base === 'USD' ? 'USDT' : base}`)
-    const price = _.get(response, 'data.result.data.a', false) // last price
-
-    if (price) {
-      const factoryDigital = 5 - price.toFixed(0).length
-      if (basePrice !== 0) {
-        const diffPercent = (price - basePrice > 0 ? '+' : '') + (100 * (price - basePrice) / basePrice ).toFixed(2)+ '%'
-        messages.push('`crypto.com`')
-        messages.push(`${price.toFixed(factoryDigital)} USDT (${diffPercent})`)
-      } else {
-        const changePrice = _.get(response, 'data.result.data.c', 0)
-        const dailyChange = (changePrice > 0 ? '+' : '') + (100 * changePrice / (price - changePrice)).toFixed(2) + '%'
-        messages.push('`crypto.com`')
-        messages.push(`${price.toFixed(factoryDigital)} ${base === 'USD' ? 'USDT' : base} (${dailyChange})`)
-      }
-    }
-  } catch (error) {
-    console.log('crypto.com error', error.message)
-  }
+  })
 
   if (messages.length > 0) {
     bot.editMessageText(
@@ -158,21 +145,34 @@ bot.onText(/^\/price/, async (msg) => {
 
 bot.onText(/^\/pin$/, async (msg) => {
   if (msg.chat.type !== 'group' && msg.chat.type !== 'supergroup') {
+    await bot.sendMessage(
+      msg.chat.id,
+      '群組才能用',
+      { reply_to_message_id: msg.message_id }
+    )
     return
   }
 
   const memberInfo = await bot.getChatMember(msg.chat.id, msg.from.id)
   if (memberInfo.status !== 'creator' && memberInfo.status !== 'administrator') {
+    await bot.sendMessage(
+      msg.chat.id,
+      '群組管理員才能用',
+      { reply_to_message_id: msg.message_id }
+    )
     return
   }
 
   const priceMessageResponse = await bot.sendMessage(msg.chat.id, 'Loading...')
   const statusMessageResponse = await bot.sendMessage(msg.chat.id, 'Loading...')
 
-  try {
-    await bot.pinChatMessage(msg.chat.id, priceMessageResponse.message_id, { disable_notification: true })
-  } catch (error) {
-    console.log('pinChatMessage error', error.message)
+  const chatInfo = await bot.getChat(msg.chat.id)
+  if (chatInfo.permissions.can_pin_messages) {
+    try {
+      await bot.pinChatMessage(msg.chat.id, priceMessageResponse.message_id, { disable_notification: true })
+    } catch (error) {
+      console.log('pinChatMessage error', error.message)
+    }
   }
 
   db.main.set(msg.chat.id, {
@@ -189,11 +189,21 @@ bot.onText(/^\/pin$/, async (msg) => {
 
 bot.onText(/^\/stop$/, async (msg) => {
   if (msg.chat.type !== 'group' && msg.chat.type !== 'supergroup') {
+    await bot.sendMessage(
+      msg.chat.id,
+      '群組才能用',
+      { reply_to_message_id: msg.message_id }
+    )
     return
   }
 
   const memberInfo = await bot.getChatMember(msg.chat.id, msg.from.id)
   if (memberInfo.status !== 'creator' && memberInfo.status !== 'administrator') {
+    await bot.sendMessage(
+      msg.chat.id,
+      '群組管理員才能用',
+      { reply_to_message_id: msg.message_id }
+    )
     return
   }
 

@@ -1,5 +1,5 @@
 import TelegramBot from 'node-telegram-bot-api'
-import db from 'db'
+import db from 'libs/db'
 
 const botToken = db.config.get('botToken').value()
 

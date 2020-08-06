@@ -68,20 +68,27 @@ bot.onText(/^\/top/, async (msg) => {
 
   try {
     const results = await marketcap.getTop(top)
-    const messages = results.map((result) => {
+    const list = results.map((result) => {
       const { cmc_rank: rank, symbol } = result
       const { price, percent_change_24h: change24h } = result.quote.USD
+      const factoryDigital = 5 - price.toFixed(0).length
 
       const displayRank = String(rank).padEnd(2, ' ')
       const displaySymbol = symbol.padEnd(5, ' ')
-      const factoryDigital = 5 - price.toFixed(0).length
       const displayPrice = price.toFixed(factoryDigital).padEnd(6, ' ')
-      const dailyChange = (change24h > 0 ? '+' : '') + change24h.toFixed(2) + '%'
-      return `#${displayRank}\t${displaySymbol}\t$${displayPrice}\t(${dailyChange})`
+      const displayChange = (change24h > 0 ? '+' : '') + change24h.toFixed(2) + '%'
+      return `#${displayRank}\t${displaySymbol}\t$${displayPrice}\t(${displayChange})`
     })
 
+    const messages = [
+      `CoinMarketCap Top ${top}`,
+      '```',
+      ...list,
+      '```',
+    ]
+
     bot.editMessageText(
-      `CoinMarketCap Top ${top}\n` + '```\n' + messages.join('\n') + '\n```',
+      messages.join('\n'),
       {
         ...messageToEdit,
         parse_mode: 'Markdown',

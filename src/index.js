@@ -59,7 +59,7 @@ bot.onText(/^\/top/, async (msg) => {
   const messageResponse = await bot.sendMessage(
     msg.chat.id,
     'Loading...',
-    { reply_to_message_id: msg.message_id }
+    { reply_to_message_id: msg.message_id },
   )
   const messageToEdit = {
     chat_id: messageResponse.chat.id,
@@ -160,7 +160,7 @@ bot.onText(/^\/price/, async (msg) => {
   const messageResponse = await bot.sendMessage(
     msg.chat.id,
     'Loading...',
-    { reply_to_message_id: msg.message_id }
+    { reply_to_message_id: msg.message_id },
   )
   const messageToEdit = {
     chat_id: messageResponse.chat.id,
@@ -182,10 +182,12 @@ bot.onText(/^\/price/, async (msg) => {
         messages.push(`${result.displayPrice} ${result.base} (${result.dailyChange})`)
         break
       case 'COST':
+        // eslint-disable-next-line no-case-declarations
         const cost = (targetAmount * result.price).toFixed(2)
         messages.push(`${cost} ${result.base}`)
         break
       case 'PROFIT':
+        // eslint-disable-next-line no-case-declarations
         const profit = (result.price - basePrice > 0 ? '+' : '') + (100 * (result.price - basePrice) / basePrice).toFixed(2) + '%'
         messages.push(`${result.displayPrice} ${result.base} (${profit})`)
         break
@@ -205,7 +207,7 @@ bot.onText(/^\/price/, async (msg) => {
   } else {
     bot.editMessageText(
       '找不到QQ',
-      messageToEdit
+      messageToEdit,
     )
   }
 })
@@ -215,7 +217,7 @@ bot.onText(/^\/pin$/, async (msg) => {
     await bot.sendMessage(
       msg.chat.id,
       '群組才能用',
-      { reply_to_message_id: msg.message_id }
+      { reply_to_message_id: msg.message_id },
     )
     return
   }
@@ -225,7 +227,7 @@ bot.onText(/^\/pin$/, async (msg) => {
     await bot.sendMessage(
       msg.chat.id,
       '群組管理員才能用',
-      { reply_to_message_id: msg.message_id }
+      { reply_to_message_id: msg.message_id },
     )
     return
   }
@@ -261,7 +263,7 @@ bot.onText(/^\/stop$/, async (msg) => {
     await bot.sendMessage(
       msg.chat.id,
       '群組才能用',
-      { reply_to_message_id: msg.message_id }
+      { reply_to_message_id: msg.message_id },
     )
     return
   }
@@ -271,7 +273,7 @@ bot.onText(/^\/stop$/, async (msg) => {
     await bot.sendMessage(
       msg.chat.id,
       '群組管理員才能用',
-      { reply_to_message_id: msg.message_id }
+      { reply_to_message_id: msg.message_id },
     )
     return
   }

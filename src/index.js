@@ -77,11 +77,11 @@ bot.onText(/^\/top/, async (msg) => {
       const factoryDigital = 5 - price.toFixed(0).length
       const displayPrice = price.toFixed(factoryDigital).padEnd(6, ' ')
       const dailyChange = (change24h > 0 ? '+' : '') + change24h.toFixed(2) + '%'
-      return `#${displayRank}\t${displaySymbol}\t${displayPrice}\t(${dailyChange})`
+      return `#${displayRank}\t${displaySymbol}\t$${displayPrice}\t(${dailyChange})`
     })
 
     bot.editMessageText(
-      '```\n' + messages.join('\n') + '\n```',
+      `CoinMarketCap Top ${top}\n` + '```\n' + messages.join('\n') + '\n```',
       {
         ...messageToEdit,
         parse_mode: 'Markdown',

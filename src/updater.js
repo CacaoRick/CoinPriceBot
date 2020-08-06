@@ -3,7 +3,7 @@ import moment from 'moment-timezone'
 
 import db from 'libs/db'
 import bot from 'libs/telegram'
-import getTop from 'libs/marketcap'
+import marketcap from 'libs/marketcap'
 import delay from 'libs/delay'
 import bitfinex from 'libs/bitfinex'
 import cryptoCom from 'libs/crypto.com'
@@ -84,7 +84,7 @@ export default {
 
 async function updateCurrencies () {
   try {
-    const top3 = await getTop(3)
+    const top3 = await marketcap.getTop(3)
     currencies = top3.map(currency => currency.symbol)
     console.log('update top currencies', currencies)
   } catch (error) {

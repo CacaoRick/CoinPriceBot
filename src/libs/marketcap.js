@@ -1,7 +1,7 @@
 import axios from 'axios'
 import db from 'libs/db'
 
-export default async function getTop (top = 3) {
+export async function getTop (top = 3) {
   const response = await axios.get(
     `https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest`,
     {
@@ -17,4 +17,8 @@ export default async function getTop (top = 3) {
   )
 
   return response.data.data
+}
+
+export default {
+  getTop,
 }

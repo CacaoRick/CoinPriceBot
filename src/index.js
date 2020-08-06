@@ -1,5 +1,6 @@
 import db from 'libs/db'
 import bot from 'libs/telegram'
+import marketcap from 'libs/marketcap'
 import bitfinex from 'libs/bitfinex'
 import binance from 'libs/binance'
 import cryptoCom from 'libs/crypto.com'
@@ -20,6 +21,14 @@ export const helpMessage = [
   '例如查詢 1000 USD 購入的 ETH 目前漲跌幾％：',
   '`/price ETH 1000`',
   '',
+  '/price `<數量> <幣種>`',
+  '計算購入成本',
+  '例如查詢 10000 CRO 購入成本：',
+  '`/price 10000 CRO`',
+  '',
+  '/top',
+  '列出 CoinMarketCap top 10',
+  '',
   '目前支援的 API： `Bitfinex Binance Crypto.com`',
 ].join('\n')
 
@@ -36,6 +45,57 @@ bot.onText(/^\/help$/, (msg) => {
 
 bot.on('error', (error) => {
   console.log(error.message)
+})
+
+bot.onText(/^\/top/, async (msg) => {
+  const params = msg.text.split(' ')
+  const top = params[1] && !isNaN(params[1]) ? Number(params[1]) : 10
+  if (params.length > 2) {
+    sendHelp(msg)
+    return
+  }
+
+  // 送出 Loading...
+  const messageResponse = await bot.sendMessage(
+    msg.chat.id,
+    'Loading...',
+    { reply_to_message_id: msg.message_id }
+  )
+  const messageToEdit = {
+    chat_id: messageResponse.chat.id,
+    message_id: messageResponse.message_id,
+  }
+
+  try {
+    const results = await marketcap.getTop(top)
+    const messages = results.map((result) => {
+      const { cmc_rank: rank, symbol } = result
+      const { price, percent_change_24h: change24h } = result.quote.USD
+
+      const displayRank = String(rank).padEnd(2, ' ')
+      const displaySymbol = symbol.padEnd(5, ' ')
+      const factoryDigital = 5 - price.toFixed(0).length
+      const displayPrice = price.toFixed(factoryDigital).padEnd(6, ' ')
+      const dailyChange = (change24h > 0 ? '+' : '') + change24h.toFixed(2) + '%'
+      return `#${displayRank}\t${displaySymbol}\t${displayPrice}\t(${dailyChange})`
+    })
+
+    bot.editMessageText(
+      '```\n' + messages.join('\n') + '\n```',
+      {
+        ...messageToEdit,
+        parse_mode: 'Markdown',
+      },
+    )
+  } catch (error) {
+    bot.editMessageText(
+      '錯誤了QQ\n`' + error.message + '`',
+      {
+        ...messageToEdit,
+        parse_mode: 'Markdown',
+      },
+    )
+  }
 })
 
 bot.onText(/^\/price/, async (msg) => {

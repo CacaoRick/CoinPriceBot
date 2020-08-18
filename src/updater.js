@@ -17,7 +17,7 @@ const lastMessage = {}
 let currencies = ['BTC', 'ETH']
 
 export async function start () {
-  await updateCurrencies()
+  // await updateCurrencies()
   update()
   setInterval(update, updateDuration)
   // setInterval(updateCurrencies, updateCurrenciesDuration)

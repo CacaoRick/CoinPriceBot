@@ -6,11 +6,12 @@ import bot from 'libs/telegram'
 import marketcap from 'libs/marketcap'
 import delay from 'libs/delay'
 import bitfinex from 'libs/bitfinex'
+import binance from 'libs/binance'
 import cryptoCom from 'libs/crypto.com'
 
 const updateDuration = 15 * 1000 // update price from api
 const switchMessageDuration = 7.5 * 1000 // switch between price / 24h change
-const updateCurrenciesDuration = 30 * 60 * 1000
+// const updateCurrenciesDuration = 30 * 60 * 1000
 
 const lastMessage = {}
 let currencies = ['BTC', 'ETH']
@@ -19,7 +20,7 @@ export async function start () {
   await updateCurrencies()
   update()
   setInterval(update, updateDuration)
-  setInterval(updateCurrencies, updateCurrenciesDuration)
+  // setInterval(updateCurrencies, updateCurrenciesDuration)
 }
 
 async function update () {
@@ -34,6 +35,7 @@ async function update () {
     const fUSD = await bitfinex.fundingTicker('fUSD')
     const results = await bitfinex.tickers(currencies)
     const CRO = await cryptoCom.getTicker('CRO', 'USDT')
+    const SXP = await binance.dailyStats('SXP', 'USDT')
 
     const updateAt = moment()
 
@@ -47,6 +49,9 @@ async function update () {
 
     priceMessages.push(`CRO \`${CRO.displayPrice}\``)
     priceChangeMessages.push(`CRO \`${CRO.dailyChange}\``)
+
+    priceMessages.push(`SXP \`${SXP.displayPrice}\``)
+    priceChangeMessages.push(`SXP \`${SXP.dailyChange}\``)
 
     // 更新訊息
     _.forEach(db.main.value(), async (group, groupId) => {

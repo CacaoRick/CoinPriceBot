@@ -32,26 +32,41 @@ async function update () {
     const priceMessages = []
     const priceChangeMessages = []
 
-    const fUSD = await bitfinex.fundingTicker('fUSD')
-    const results = await bitfinex.tickers(currencies)
-    const CRO = await cryptoCom.getTicker('CRO', 'USDT')
-    const SXP = await binance.dailyStats('SXP', 'USDT')
-
     const updateAt = moment()
 
-    priceMessages.push(`f$ \`${fUSD.displayRate}\``)
-    priceChangeMessages.push(`f$ \`${fUSD.dailyChange}\``)
+    try {
+      const fUSD = await bitfinex.fundingTicker('fUSD')
+      priceMessages.push(`f$ \`${fUSD.displayRate}\``)
+      priceChangeMessages.push(`f$ \`${fUSD.dailyChange}\``)
+    } catch (error) {
+      console.log('get bitfinex fUSD', error.message)
+    }
 
-    results.forEach(result => {
-      priceMessages.push(`${result.currency} \`${result.displayPrice}\``)
-      priceChangeMessages.push(`${result.currency} \`${result.dailyChange}\``)
-    })
+    try {
+      const results = await bitfinex.tickers(currencies)
+      results.forEach(result => {
+        priceMessages.push(`${result.currency} \`${result.displayPrice}\``)
+        priceChangeMessages.push(`${result.currency} \`${result.dailyChange}\``)
+      })
+    } catch (error) {
+      console.log('get bitfinex currencies', error.message)
+    }
 
-    priceMessages.push(`CRO \`${CRO.displayPrice}\``)
-    priceChangeMessages.push(`CRO \`${CRO.dailyChange}\``)
+    try {
+      const CRO = await cryptoCom.getTicker('CRO', 'USDT')
+      priceMessages.push(`CRO \`${CRO.displayPrice}\``)
+      priceChangeMessages.push(`CRO \`${CRO.dailyChange}\``)
+    } catch (error) {
+      console.log('get CRO', error.message)
+    }
 
-    priceMessages.push(`SXP \`${SXP.displayPrice}\``)
-    priceChangeMessages.push(`SXP \`${SXP.dailyChange}\``)
+    try {
+      const SXP = await binance.dailyStats('SXP', 'USDT')
+      priceMessages.push(`SXP \`${SXP.displayPrice}\``)
+      priceChangeMessages.push(`SXP \`${SXP.dailyChange}\``)
+    } catch (error) {
+      console.log('get SXP', error.message)
+    }
 
     // 更新訊息
     _.forEach(db.main.value(), async (group, groupId) => {

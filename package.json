@@ -16,7 +16,8 @@
     "lowdb": "^1.0.0",
     "moment": "^2.27.0",
     "moment-timezone": "^0.5.31",
-    "node-telegram-bot-api": "^0.50.0"
+    "node-telegram-bot-api": "^0.50.0",
+    "ws": "^7.4.2"
   },
   "devDependencies": {
     "@babel/cli": "^7.5.5",

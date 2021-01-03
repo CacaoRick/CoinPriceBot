@@ -3,7 +3,7 @@ import db from 'libs/db'
 
 export async function getTop (top = 3) {
   const response = await axios.get(
-    `https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest`,
+    'https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest',
     {
       params: {
         start: '1',
@@ -13,7 +13,7 @@ export async function getTop (top = 3) {
       headers: {
         'X-CMC_PRO_API_KEY': db.config.get('coinmarketcapApiKey').value(),
       },
-    }
+    },
   )
 
   return response.data.data

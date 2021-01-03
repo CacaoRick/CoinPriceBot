@@ -1,20 +1,18 @@
+import binance from 'apis/binance'
+import bitfinex from 'apis/bitfinex'
+import cryptoCom from 'apis/crypto.com'
+import db from 'libs/db'
+import delay from 'libs/delay'
+import bot from 'libs/telegram'
 import _ from 'lodash'
 import moment from 'moment-timezone'
-
-import db from 'libs/db'
-import bot from 'libs/telegram'
-import marketcap from 'libs/marketcap'
-import delay from 'libs/delay'
-import bitfinex from 'libs/bitfinex'
-import binance from 'libs/binance'
-import cryptoCom from 'libs/crypto.com'
 
 const updateDuration = 15 * 1000 // update price from api
 const switchMessageDuration = 7.5 * 1000 // switch between price / 24h change
 // const updateCurrenciesDuration = 30 * 60 * 1000
 
 const lastMessage = {}
-let currencies = ['BTC', 'ETH']
+const currencies = ['BTC', 'ETH']
 
 export async function start () {
   // await updateCurrencies()
@@ -102,12 +100,12 @@ export default {
   start,
 }
 
-async function updateCurrencies () {
-  try {
-    const top3 = await marketcap.getTop(3)
-    currencies = top3.map(currency => currency.symbol)
-    console.log('update top currencies', currencies)
-  } catch (error) {
-    console.log('updateCurrencies', error.message)
-  }
-}
+// async function updateCurrencies () {
+//   try {
+//     const top3 = await marketcap.getTop(3)
+//     currencies = top3.map(currency => currency.symbol)
+//     console.log('update top currencies', currencies)
+//   } catch (error) {
+//     console.log('updateCurrencies', error.message)
+//   }
+// }

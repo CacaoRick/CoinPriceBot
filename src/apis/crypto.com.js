@@ -1,5 +1,5 @@
-import _ from 'lodash'
 import axios from 'axios'
+import _ from 'lodash'
 
 export async function getTicker (currency, base) {
   base = base === 'USD' ? 'USDT' : base

@@ -1,0 +1,10 @@
+{
+  "[javascript, javascriptreact]": {
+    "editor.formatOnSave": false
+  },
+  "editor.codeActionsOnSave": [
+    "source.organizeImports",
+    "source.fixAll.eslint"
+  ],
+  "javascript.format.enable": false,
+}

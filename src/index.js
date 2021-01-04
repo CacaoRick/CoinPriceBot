@@ -9,8 +9,6 @@ import binanceFundingFeeWs from 'libs/binanceFundingFeeWs'
 import bot from 'libs/telegram'
 import updater from 'updater'
 
-console.log(process.env.BOT_TOKEN)
-
 binanceFundingFeeWs.start()
 updater.start()
 

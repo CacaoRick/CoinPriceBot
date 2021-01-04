@@ -10,7 +10,7 @@ ws.on('message', (message) => {
       const fundingFeeData = result.data.map(data => {
         return {
           symbol: data.s,
-          fundingFeeRate: Number(data.r),
+          fundingFeeRate: 100 * Number(data.r),
           updatedAt: new Date(data.E),
           timeToNextFunding: new Date(data.T),
         }

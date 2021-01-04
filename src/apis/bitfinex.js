@@ -8,6 +8,7 @@ export async function fundingTicker (symbol) {
     const rate = response.data[9]
 
     return {
+      title: 'BFX ' + symbol.replace('f', '').replace('UST', 'USDT'),
       symbol: symbol,
       rate: rate,
       displayRate: (100 * rate).toFixed(4) + '%',

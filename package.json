@@ -4,7 +4,7 @@
   "main": "build/index.js",
   "license": "MIT",
   "scripts": {
-    "start": "babel-node src/index.js",
+    "start": "babel-node -r dotenv/config src/index.js",
     "build": "babel src -d build --source-maps",
     "serve": "node build/index.js",
     "node": "babel-node --"
@@ -12,6 +12,7 @@
   "dependencies": {
     "axios": "^0.19.2",
     "binance-api-node": "^0.10.4",
+    "dotenv": "^8.2.0",
     "lodash": "^4.17.19",
     "lowdb": "^1.0.0",
     "moment": "^2.27.0",

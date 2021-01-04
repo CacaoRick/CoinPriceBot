@@ -55,7 +55,7 @@ export default async function fundingFeeHandler (msg) {
 
     messages = [
         `${symbol} 資金費率`,
-        `\`${fundingFeeRate.toFixed(4)}\``,
+        `\`${fundingFeeRate.toFixed(4)}%\``,
       // `${moment(updateAt).tz('Asia/Taipei').format('HH:mm:ss')}`,
       // '[幣安合約信息](https://www.binance.com/tw/futures/funding-history/0)',
     ]

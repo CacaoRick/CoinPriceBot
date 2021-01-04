@@ -1,6 +1,7 @@
 import binance from 'apis/binance'
 import bitfinex from 'apis/bitfinex'
 import cryptoCom from 'apis/crypto.com'
+import ftx from 'apis/ftx'
 import help from 'handlers/help'
 import bot from 'libs/telegram'
 
@@ -70,6 +71,7 @@ export default async function priceHandler (msg) {
   promises.push(bitfinex.ticker(currency, base))
   promises.push(binance.dailyStats(currency, base))
   promises.push(cryptoCom.getTicker(currency, base))
+  promises.push(ftx.getMarkets(currency, base))
 
   const messages = []
   const results = await Promise.all(promises)

@@ -60,3 +60,4 @@ build
 db.json
 funding-fee.json
 config/config.json
+.env

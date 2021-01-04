@@ -1,5 +1,4 @@
 import axios from 'axios'
-import db from 'libs/db'
 
 export async function getTop (top = 3) {
   const response = await axios.get(
@@ -11,7 +10,7 @@ export async function getTop (top = 3) {
         convert: 'USD',
       },
       headers: {
-        'X-CMC_PRO_API_KEY': db.config.get('coinmarketcapApiKey').value(),
+        'X-CMC_PRO_API_KEY': process.env.CMC_API_KEY,
       },
     },
   )

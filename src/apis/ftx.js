@@ -38,7 +38,7 @@ export async function getLendingRate (coin) {
       title: 'FTX ' + coin,
       symbol: coin,
       rate: rate,
-      displayRate: (100 * rate).toFixed(4) + '%',
+      displayRate: (24 * 100 * rate).toFixed(4) + '%',
       dailyChange: null,
     }
   } catch (error) {

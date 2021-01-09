@@ -60,7 +60,10 @@ export default async function priceHandler (msg) {
   const messageResponse = await bot.sendMessage(
     msg.chat.id,
     'Loading...',
-    { reply_to_message_id: msg.message_id },
+    {
+      reply_to_message_id: msg.message_id,
+      disable_notification: true,
+    },
   )
   const messageToEdit = {
     chat_id: messageResponse.chat.id,

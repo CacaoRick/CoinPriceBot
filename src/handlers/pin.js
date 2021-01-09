@@ -7,7 +7,10 @@ async function pinHandler (msg) {
     await bot.sendMessage(
       msg.chat.id,
       '群組才能用',
-      { reply_to_message_id: msg.message_id },
+      {
+        reply_to_message_id: msg.message_id,
+        disable_notification: true,
+      },
     )
     return
   }
@@ -17,13 +20,16 @@ async function pinHandler (msg) {
     await bot.sendMessage(
       msg.chat.id,
       '群組管理員才能用',
-      { reply_to_message_id: msg.message_id },
+      {
+        reply_to_message_id: msg.message_id,
+        disable_notification: true,
+      },
     )
     return
   }
 
-  const priceMessageResponse = await bot.sendMessage(msg.chat.id, 'Loading...')
-  const statusMessageResponse = await bot.sendMessage(msg.chat.id, 'Loading...')
+  const priceMessageResponse = await bot.sendMessage(msg.chat.id, 'Loading...', { disable_notification: true })
+  const statusMessageResponse = await bot.sendMessage(msg.chat.id, 'Loading...', { disable_notification: true })
 
   const chatInfo = await bot.getChat(msg.chat.id)
   console.log('chatInfo', chatInfo)
@@ -53,7 +59,10 @@ async function stopPinHandler (msg) {
     await bot.sendMessage(
       msg.chat.id,
       '群組才能用',
-      { reply_to_message_id: msg.message_id },
+      {
+        reply_to_message_id: msg.message_id,
+        disable_notification: true,
+      },
     )
     return
   }
@@ -63,7 +72,10 @@ async function stopPinHandler (msg) {
     await bot.sendMessage(
       msg.chat.id,
       '群組管理員才能用',
-      { reply_to_message_id: msg.message_id },
+      {
+        reply_to_message_id: msg.message_id,
+        disable_notification: true,
+      },
     )
     return
   }

@@ -31,5 +31,6 @@ export default function helpHandler (msg) {
   bot.sendMessage(msg.chat.id, helpMessage, {
     parse_mode: 'Markdown',
     reply_to_message_id: msg.message_id,
+    disable_notification: true,
   })
 }

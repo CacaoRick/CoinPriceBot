@@ -48,18 +48,16 @@ export default async function fundingFeeHandler (msg) {
   }
 
   if (params.length === 2) {
-    const currency = params[1].toUpperCase()
-    const currencies = currency.split(',').map(c => c.trim())
+    let time = null
+    const currencies = params[1].toUpperCase().split(',').map(c => c.trim() + 'USDT')
     const fundingFeeMessages = db.fundingFee
       .get('fundingFees')
-      .filter(fundingFee => fundingFee.symbol.startsWith(currency))
+      .filter(fundingFee => currencies.includes(fundingFee.symbol))
       .map(fundingFee => {
         time = fundingFee.updateAt
         return `${fundingFee.symbol} ${fundingFee.fundingFeeRate.toFixed(4)}%`
       })
       .value()
-
-    const { symbol, fundingFeeRate } = fundingFee
 
     messages = [
       '```',

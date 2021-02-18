@@ -49,18 +49,23 @@ export default async function fundingFeeHandler (msg) {
 
   if (params.length === 2) {
     const currency = params[1].toUpperCase()
-    const fundingFee = db.fundingFee
+    const currencies = currency.split(',').map(c => c.trim())
+    const fundingFeeMessages = db.fundingFee
       .get('fundingFees')
-      .find(fundingFee => fundingFee.symbol.startsWith(currency))
+      .filter(fundingFee => fundingFee.symbol.startsWith(currency))
+      .map(fundingFee => {
+        time = fundingFee.updateAt
+        return `${fundingFee.symbol} ${fundingFee.fundingFeeRate.toFixed(4)}%`
+      })
       .value()
 
     const { symbol, fundingFeeRate } = fundingFee
 
     messages = [
-        `${symbol} 資金費率`,
-        `\`${fundingFeeRate.toFixed(4)}%\``,
-      // `${moment(updateAt).tz('Asia/Taipei').format('HH:mm:ss')}`,
-      // '[幣安合約信息](https://www.binance.com/tw/futures/funding-history/0)',
+      '```',
+      ...fundingFeeMessages,
+      '```',
+      '更新時間: ' + moment(time).tz('Asia/Taipei').format('HH:mm:ss'),
     ]
   }
 

@@ -1,6 +1,5 @@
 import binance from 'apis/binance'
 import bitfinex from 'apis/bitfinex'
-import cryptoCom from 'apis/crypto.com'
 import db from 'libs/db'
 import delay from 'libs/delay'
 import bot from 'libs/telegram'
@@ -50,12 +49,20 @@ async function update () {
       console.log('get bitfinex currencies', error.message)
     }
 
+    // try {
+    //   const CRO = await cryptoCom.getTicker('CRO', 'USDT')
+    //   priceMessages.push(`CRO \`${CRO.displayPrice}\``)
+    //   priceChangeMessages.push(`CRO \`${CRO.dailyChange}\``)
+    // } catch (error) {
+    //   console.log('get CRO', error.message)
+    // }
+
     try {
-      const CRO = await cryptoCom.getTicker('CRO', 'USDT')
-      priceMessages.push(`CRO \`${CRO.displayPrice}\``)
-      priceChangeMessages.push(`CRO \`${CRO.dailyChange}\``)
+      const BNB = await binance.dailyStats('BNB', 'USDT')
+      priceMessages.push(`BNB \`${BNB.displayPrice}\``)
+      priceChangeMessages.push(`BNB \`${BNB.dailyChange}\``)
     } catch (error) {
-      console.log('get CRO', error.message)
+      console.log('get BNB', error.message)
     }
 
     try {

@@ -24,6 +24,15 @@ const helpMessage = [
   '/gas',
   '列出 gas fee',
   '',
+  '/lendingrate',
+  '列出 USD USDT 放貸利率',
+  '',
+  '/fundingfee',
+  '列出前 10 資金費率',
+  '',
+  '/fundingfee `<幣種>[,幣種2...]`',
+  '列出指定幣種的資金費率',
+  '',
   '目前支援的 API： `Bitfinex Binance Crypto.com`',
 ].join('\n')
 

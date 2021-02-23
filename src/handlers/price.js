@@ -6,7 +6,7 @@ import help from 'handlers/help'
 import bot from 'libs/telegram'
 
 export default async function priceHandler (msg) {
-  const params = msg.text.split(' ')
+  const params = msg.text.split(' ').filter(p => p)
   if (params.length === 1 || params.length > 3) {
     help(msg)
     return

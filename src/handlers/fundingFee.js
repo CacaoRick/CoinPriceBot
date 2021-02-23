@@ -4,7 +4,7 @@ import bot from 'libs/telegram'
 import moment from 'moment'
 
 export default async function fundingFeeHandler (msg) {
-  const params = msg.text.split(' ')
+  const params = msg.text.split(' ').filter(p => p)
   if (params.length !== 1 && params.length !== 2) {
     help(msg)
     return

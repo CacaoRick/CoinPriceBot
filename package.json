@@ -11,7 +11,7 @@
     "build:image": "docker build -t coin-price-bot ."
   },
   "dependencies": {
-    "axios": "^0.21.1",
+    "axios": "^0.21.2",
     "binance-api-node": "^0.10.4",
     "dotenv": "^8.2.0",
     "lodash": "^4.17.21",

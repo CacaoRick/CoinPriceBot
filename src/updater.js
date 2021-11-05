@@ -31,13 +31,13 @@ async function update () {
 
     const updateAt = moment()
 
-    try {
-      const fUSD = await bitfinex.fundingTicker('fUSD')
-      priceMessages.push(`f$ \`${fUSD.displayRate}\``)
-      priceChangeMessages.push(`f$ \`${fUSD.dailyChange}\``)
-    } catch (error) {
-      console.log('get bitfinex fUSD', error.message)
-    }
+    // try {
+    //   const fUSD = await bitfinex.fundingTicker('fUSD')
+    //   priceMessages.push(`f$ \`${fUSD.displayRate}\``)
+    //   priceChangeMessages.push(`f$ \`${fUSD.dailyChange}\``)
+    // } catch (error) {
+    //   console.log('get bitfinex fUSD', error.message)
+    // }
 
     try {
       const results = await bitfinex.tickers(currencies)
@@ -66,12 +66,28 @@ async function update () {
     }
 
     try {
-      const SXP = await binance.dailyStats('SXP', 'USDT')
-      priceMessages.push(`SXP \`${SXP.displayPrice}\``)
-      priceChangeMessages.push(`SXP \`${SXP.dailyChange}\``)
+      const SOL = await binance.dailyStats('SOL', 'USDT')
+      priceMessages.push(`SOL \`${SOL.displayPrice}\``)
+      priceChangeMessages.push(`SOL \`${SOL.dailyChange}\``)
     } catch (error) {
-      console.log('get SXP', error.message)
+      console.log('get SOL', error.message)
     }
+    
+    try {
+      const CAKE = await binance.dailyStats('CAKE', 'USDT')
+      priceMessages.push(`CAKE \`${CAKE.displayPrice}\``)
+      priceChangeMessages.push(`CAKE \`${CAKE.dailyChange}\``)
+    } catch (error) {
+      console.log('get CAKE', error.message)
+    }
+
+    // try {
+    //   const SXP = await binance.dailyStats('SXP', 'USDT')
+    //   priceMessages.push(`SXP \`${SXP.displayPrice}\``)
+    //   priceChangeMessages.push(`SXP \`${SXP.dailyChange}\``)
+    // } catch (error) {
+    //   console.log('get SXP', error.message)
+    // }
 
     // 更新訊息
     _.forEach(db.main.value(), async (group, groupId) => {

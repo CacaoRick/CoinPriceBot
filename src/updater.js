@@ -1,5 +1,6 @@
 import binance from 'apis/binance'
 import bitfinex from 'apis/bitfinex'
+import cryptoCom from 'apis/crypto.com'
 import db from 'libs/db'
 import delay from 'libs/delay'
 import bot from 'libs/telegram'

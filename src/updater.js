@@ -49,14 +49,6 @@ async function update () {
       console.log('get bitfinex currencies', error.message)
     }
 
-    // try {
-    //   const CRO = await cryptoCom.getTicker('CRO', 'USDT')
-    //   priceMessages.push(`CRO \`${CRO.displayPrice}\``)
-    //   priceChangeMessages.push(`CRO \`${CRO.dailyChange}\``)
-    // } catch (error) {
-    //   console.log('get CRO', error.message)
-    // }
-
     try {
       const BNB = await binance.dailyStats('BNB', 'USDT')
       priceMessages.push(`BNB \`${BNB.displayPrice}\``)
@@ -64,7 +56,7 @@ async function update () {
     } catch (error) {
       console.log('get BNB', error.message)
     }
-
+    
     try {
       const SOL = await binance.dailyStats('SOL', 'USDT')
       priceMessages.push(`SOL \`${SOL.displayPrice}\``)
@@ -72,14 +64,21 @@ async function update () {
     } catch (error) {
       console.log('get SOL', error.message)
     }
-    
+   
     try {
-      const CAKE = await binance.dailyStats('CAKE', 'USDT')
-      priceMessages.push(`CAKE \`${CAKE.displayPrice}\``)
-      priceChangeMessages.push(`CAKE \`${CAKE.dailyChange}\``)
+      const CRO = await cryptoCom.getTicker('CRO', 'USDT')
+      priceMessages.push(`CRO \`${CRO.displayPrice}\``)
+      priceChangeMessages.push(`CRO \`${CRO.dailyChange}\``)
     } catch (error) {
-      console.log('get CAKE', error.message)
+      console.log('get CRO', error.message)
     }
+//     try {
+//       const CAKE = await binance.dailyStats('CAKE', 'USDT')
+//       priceMessages.push(`CAKE \`${CAKE.displayPrice}\``)
+//       priceChangeMessages.push(`CAKE \`${CAKE.dailyChange}\``)
+//     } catch (error) {
+//       console.log('get CAKE', error.message)
+//     }
 
     // try {
     //   const SXP = await binance.dailyStats('SXP', 'USDT')

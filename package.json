@@ -16,7 +16,7 @@
     "dotenv": "^8.2.0",
     "lodash": "^4.17.21",
     "lowdb": "^1.0.0",
-    "moment": "^2.27.0",
+    "moment": "^2.29.2",
     "moment-timezone": "^0.5.31",
     "node-telegram-bot-api": "^0.50.0",
     "ws": "^7.4.6"

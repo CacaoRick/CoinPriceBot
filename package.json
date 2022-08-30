@@ -17,7 +17,7 @@
     "lodash": "^4.17.21",
     "lowdb": "^1.0.0",
     "moment": "^2.27.0",
-    "moment-timezone": "^0.5.31",
+    "moment-timezone": "^0.5.35",
     "node-telegram-bot-api": "^0.50.0",
     "ws": "^7.4.6"
   },
